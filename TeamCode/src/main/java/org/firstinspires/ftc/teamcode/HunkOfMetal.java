@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class HunkOfMetal {
-    DcMotor leftBack;
+    DcMotor leftBack; //
     DcMotor leftFront;
     DcMotor rightBack;
     DcMotor rightFront;
