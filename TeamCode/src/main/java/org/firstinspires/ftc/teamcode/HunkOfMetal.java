@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class HunkOfMetal {
-    DcMotor leftBack; //
+    DcMotor leftBack;
     DcMotor leftFront;
     DcMotor rightBack;
     DcMotor rightFront;
