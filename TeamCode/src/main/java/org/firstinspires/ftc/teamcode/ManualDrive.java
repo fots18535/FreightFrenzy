@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+@TeleOp
 public class ManualDrive extends LinearOpMode
 {
+
     DcMotor leftBack;
     DcMotor leftFront;
     DcMotor rightBack;
@@ -21,9 +24,9 @@ public class ManualDrive extends LinearOpMode
         leftFront = hardwareMap.get(DcMotor.class, "leftFront");
         rightBack = hardwareMap.get(DcMotor.class, "rightBack");
         rightFront = hardwareMap.get(DcMotor.class, "rightFront");
-        turnTable = hardwareMap. get(DcMotor.class. "duckyTable");
-        gandalfStaff = hardwareMap.get(DcMotor.class, "spinnyArmOfDeath");
-        clampy = hardwareMap.get(Servo.class, "clampyArmOfDeath");
+        turnTable = hardwareMap. get(DcMotor.class, "turnTable");
+        gandalfStaff = hardwareMap.get(DcMotor.class, "staff");
+        clampy = hardwareMap.get(Servo.class, "clampy");
 
 
         // Stops coasting
@@ -55,10 +58,9 @@ public class ManualDrive extends LinearOpMode
                 turnTable. setPower(0);
             }
 
-
             //manually controls gandalf's arm
-            boolean upPad = gamepad1. dpad_left;
-            boolean downPad = gamepad1. dpad_left;
+            boolean upPad = gamepad1. dpad_up;
+            boolean downPad = gamepad1. dpad_down;
 
             if(upPad){
                 gandalfStaff. setPower(0.5);
@@ -87,10 +89,8 @@ public class ManualDrive extends LinearOpMode
             }
 
             //manually controls clampy
-            float rightTrigger = gamepad2. right_trigger;
-
-
-                clampy. setPosition (rightTrigger);
+            float rightTrigger = gamepad1.right_trigger;
+            clampy. setPosition (rightTrigger);
 
 
                 // Setting the motor power based on the input
