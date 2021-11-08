@@ -37,7 +37,8 @@ public class ManualDrive extends LinearOpMode
 
 
         waitForStart();
-
+       gandalfStaff.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+       gandalfStaff.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         while (opModeIsActive()) {
             //Get the input from the gamepad controller
@@ -48,24 +49,29 @@ public class ManualDrive extends LinearOpMode
 
             //manually controls turntable
             boolean leftPad = gamepad1. dpad_left;
-            boolean rightPad = gamepad1. dpad_left;
+            boolean rightPad = gamepad1. dpad_right;
 
-            if(leftPad){
-               turnTable. setPower(1);
-            }else if(rightPad){
-                turnTable. setPower(-1);
-            }else{
-                turnTable. setPower(0);
-            }
+            // Make sure arm is up X tics before turning
+
+            telemetry.addData("encoder",gandalfStaff.getCurrentPosition());
+            telemetry.update();
+
+                if (leftPad && gandalfStaff.getCurrentPosition()>90) {
+                    turnTable.setPower(0.5);
+                } else if (rightPad && gandalfStaff.getCurrentPosition()>90) {
+                    turnTable.setPower(-0.5);
+                } else {
+                   turnTable.setPower(0);
+                }
 
             //manually controls gandalf's arm
             boolean upPad = gamepad1. dpad_up;
             boolean downPad = gamepad1. dpad_down;
 
-            if(upPad){
-                gandalfStaff. setPower(0.5);
+            if(upPad && gandalfStaff.getCurrentPosition()<1000){
+                gandalfStaff. setPower(-0.75);
             }else if(downPad){
-                gandalfStaff. setPower(-0.5);
+                gandalfStaff. setPower(0.75);
             }else{
                 gandalfStaff.setPower(0);
             }
