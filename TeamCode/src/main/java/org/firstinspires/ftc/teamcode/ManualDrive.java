@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
@@ -35,6 +36,8 @@ public class ManualDrive extends LinearOpMode
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
         waitForStart();
        gandalfStaff.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -42,10 +45,33 @@ public class ManualDrive extends LinearOpMode
 
         while (opModeIsActive()) {
             //Get the input from the gamepad controller
-            double leftX =   gamepad1.left_stick_x;
+            double leftX =   -gamepad1.left_stick_x;
             double leftY =   gamepad1.left_stick_y;
-            double rightX =  -gamepad1.right_stick_x;
-            double rightY =  gamepad1.right_stick_y;
+            double rightX =  gamepad1.right_stick_x;
+            double rightY =  -gamepad1.right_stick_y;
+
+            // Setting the motor power based on the input
+            leftBack.setPower(rightX + rightY + leftX);
+            leftFront.setPower(leftX + rightY - rightX);
+            rightBack.setPower(leftX - rightY + rightX);
+            rightFront.setPower(leftX - rightY - rightX);
+
+            //double leftX =   gamepad1.left_stick_x;
+            //double leftY =   gamepad1.left_stick_y;
+            //double rightX =  -gamepad1.right_stick_x;
+            //double rightY =  gamepad1.right_stick_y;
+            // Setting the motor power based on the input
+            //leftBack.setPower(rightX + rightY + leftX);
+            //leftFront.setPower(rightX + rightY - leftX);
+            //rightBack.setPower(rightX - rightY + leftX);
+            //rightFront.setPower(rightX - rightY - leftX);
+
+
+            //leftX_G1 = -gamepad1.left_stick_x;
+            //leftY_G1 = gamepad1.left_stick_y;
+            //rightX_G1 = -gamepad1.right_stick_x;
+            //rightY_G1 = -gamepad1.right_stick_y;
+
 
             //manually controls turntable
             boolean leftPad = gamepad1. dpad_left;
@@ -97,14 +123,6 @@ public class ManualDrive extends LinearOpMode
             //manually controls clampy
             float rightTrigger = gamepad1.right_trigger;
             clampy. setPosition (rightTrigger);
-
-
-                // Setting the motor power based on the input
-            leftBack.setPower(rightX + rightY + leftX);
-            leftFront.setPower(rightX + rightY - leftX);
-            rightBack.setPower(rightX - rightY + leftX);
-            rightFront.setPower(rightX - rightY - leftX);
-
 
         }
 
