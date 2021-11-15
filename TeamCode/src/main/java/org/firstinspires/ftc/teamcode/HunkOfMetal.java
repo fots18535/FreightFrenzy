@@ -11,6 +11,7 @@ public class HunkOfMetal {
     DcMotor rightBack;
     DcMotor rightFront;
     Gyro2 gyro;
+    DcMotor gandalfStaff;
     LinearOpMode mode;
 
     float ticksPerInch = 122.15f;
@@ -32,7 +33,7 @@ public class HunkOfMetal {
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+        gandalfStaff = mode.hardwareMap.get(DcMotor.class, "staff");
         gyro.startGyro();
     }
 
@@ -180,6 +181,39 @@ public class HunkOfMetal {
         rightFront.setPower(0);
     }
 
+    // TODO: raise arm to 3 different positions
+    // variables declared, not the actual values bruh
+    final int TOP_MIN = 900;
+    final int TOP_MAX = 1000;
+    //final int MIDDLE_MIN = ;
+    //final int MIDDLE_MAX = ;
+    //final int MIDDLE_MIN = ;
+    //final int BOTTOM_MAX = ;
+    public void raiseArm(int level)
+    {
+        // if current position > top_max then set power to turn backwards
+        // if current position < top_min then set power to turn forwards
+
+
+        int where = gandalfStaff.getCurrentPosition();
+        while(!(where >= TOP_MIN && where <= TOP_MAX)) {
+            if (where > TOP_MAX) {
+                gandalfStaff.setPower(-1.0);
+            } else if (where < TOP_MIN) {
+                gandalfStaff.setPower(1.0);
+            }
+        }
+        gandalfStaff.setPower(0.0);
+
+    }
+
+
+
+
+
+    // TODO: spin turntable until blue or red color
+
+    // TODO: open and close claw
 }
 
 

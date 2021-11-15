@@ -1,10 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 @TeleOp
 public class ManualDrive extends LinearOpMode
@@ -17,7 +22,8 @@ public class ManualDrive extends LinearOpMode
     DcMotor turnTable;
     DcMotor gandalfStaff;
     Servo clampy;
-
+    TouchSensor maggot;
+    DcMotor eyeball;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -28,7 +34,14 @@ public class ManualDrive extends LinearOpMode
         turnTable = hardwareMap. get(DcMotor.class, "turnTable");
         gandalfStaff = hardwareMap.get(DcMotor.class, "staff");
         clampy = hardwareMap.get(Servo.class, "clampy");
+        maggot = hardwareMap.get(TouchSensor.class, "maggot");
+        eyeball = hardwareMap.get(DcMotor.class, "eyeball");
 
+        NormalizedColorSensor sensorColor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
+
+        ColorTester black = new ColorTester(106.6f,233.1f,0.201f,0.493f,0.009f,0.015f);
+        ColorTester red = new ColorTester(0,1,0,1,0,1);
+        ColorTester blue = new ColorTester(0,1,0,1,0,1);
 
         // Stops coasting
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -42,6 +55,8 @@ public class ManualDrive extends LinearOpMode
         waitForStart();
        gandalfStaff.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
        gandalfStaff.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+       boolean encoderReset = false;
 
         while (opModeIsActive()) {
             //Get the input from the gamepad controller
@@ -78,17 +93,20 @@ public class ManualDrive extends LinearOpMode
             boolean rightPad = gamepad1. dpad_right;
 
             // Make sure arm is up X tics before turning
-
             telemetry.addData("encoder",gandalfStaff.getCurrentPosition());
             telemetry.update();
 
-                if (leftPad && gandalfStaff.getCurrentPosition()>90) {
-                    turnTable.setPower(0.5);
-                } else if (rightPad && gandalfStaff.getCurrentPosition()>90) {
-                    turnTable.setPower(-0.5);
-                } else {
-                   turnTable.setPower(0);
-                }
+            // trun left when: 1 left dpad is pressed
+            // AND the arm is lift more than 90 tics
+            // AND (the color sensor reads black or it reads red)
+            NormalizedRGBA colors = sensorColor.getNormalizedColors();
+            if (leftPad && gandalfStaff.getCurrentPosition()>90 && (black.isTargetColor(colors) || red.isTargetColor(colors))) {
+                turnTable.setPower(0.5);
+            } else if (rightPad && gandalfStaff.getCurrentPosition() >90 && (black.isTargetColor(colors) || blue.isTargetColor(colors))) {
+                turnTable.setPower(-0.5);
+            } else {
+                turnTable.setPower(0);
+            }
 
             //manually controls gandalf's arm
             boolean upPad = gamepad1. dpad_up;
@@ -96,10 +114,23 @@ public class ManualDrive extends LinearOpMode
 
             if(upPad && gandalfStaff.getCurrentPosition()<1000){
                 gandalfStaff. setPower(-0.75);
-            }else if(downPad){
+            }else if(downPad && !maggot.isPressed()){ // stop the down motion when limit is active
                 gandalfStaff. setPower(0.75);
             }else{
                 gandalfStaff.setPower(0);
+            }
+
+            // reset encoder when the magnetic limit switch is active
+
+            if(maggot.isPressed() && !encoderReset)
+            {
+                gandalfStaff.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                gandalfStaff.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                encoderReset = true;
+            }
+            else if(!maggot.isPressed())
+            {
+                encoderReset = false;
             }
 
             //set places for gandalf's arm
@@ -124,6 +155,14 @@ public class ManualDrive extends LinearOpMode
             float rightTrigger = gamepad1.right_trigger;
             clampy. setPosition (rightTrigger);
 
+            if(gamepad1.left_bumper)
+            {
+                eyeball.setPower(1.0);
+            }
+            else
+            {
+                eyeball.setPower(0.0);
+            }
         }
 
         // Stop the motors
