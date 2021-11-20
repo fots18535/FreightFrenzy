@@ -4,6 +4,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 public class HunkOfMetal {
     DcMotor leftBack;
@@ -13,6 +16,15 @@ public class HunkOfMetal {
     Gyro2 gyro;
     DcMotor gandalfStaff;
     LinearOpMode mode;
+    TouchSensor maggot;
+    DcMotor turnTable;
+    DcMotor eyeball;
+    NormalizedColorSensor sensorColor;
+    ColorTester black;
+    ColorTester red;
+    ColorTester blue;
+    ColorTester green;
+
 
     float ticksPerInch = 122.15f;
 
@@ -34,6 +46,14 @@ public class HunkOfMetal {
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         gandalfStaff = mode.hardwareMap.get(DcMotor.class, "staff");
+        maggot = mode.hardwareMap.get(TouchSensor.class, "maggot");
+        turnTable = mode.hardwareMap. get(DcMotor.class, "turnTable");
+        eyeball = mode.hardwareMap.get(DcMotor.class, "eyeball");
+        sensorColor = mode.hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
+        black = new ColorTester(106.6f,233.1f,0.201f,0.493f,0.009f,0.015f);
+        red = new ColorTester(0,1,0,1,0,1);
+        blue = new ColorTester(0,1,0,1,0,1);
+        green = new ColorTester(0,1,0,1,0,1);
         gyro.startGyro();
     }
 
@@ -185,21 +205,52 @@ public class HunkOfMetal {
     // variables declared, not the actual values bruh
     final int TOP_MIN = 900;
     final int TOP_MAX = 1000;
-    //final int MIDDLE_MIN = ;
-    //final int MIDDLE_MAX = ;
-    //final int MIDDLE_MIN = ;
-    //final int BOTTOM_MAX = ;
+    final int MIDDLE_MIN = 800;
+    final int MIDDLE_MAX = 700;
+    final int BOTTOM_MIN = 500;
+    final int BOTTOM_MAX = 400;
+    final int GROUND_MIN = -100;
+    final int GROUND_MAX = 100;
+
     public void raiseArm(int level)
     {
+        // TODO: if magnet sensor is active reset the arm encoder
+        if(maggot.isPressed())
+        {
+            gandalfStaff.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            gandalfStaff.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+
         // if current position > top_max then set power to turn backwards
         // if current position < top_min then set power to turn forwards
 
+        // TODO: depending on level set min and max variables and then use them
+        //      in the below loop instead of TOP_MIN TOP_MAX
+
+        int min = 0;
+        int max = 0;
+        if(level == 0)
+        {
+            min = GROUND_MIN;
+            max = GROUND_MAX;
+        } else if(level == 1) {
+            min = BOTTOM_MIN;
+            max = BOTTOM_MAX;
+        } else if(level == 2)
+        {
+            min = MIDDLE_MIN;
+            max = MIDDLE_MAX;
+        } else if(level == 3)
+        {
+            min = TOP_MIN;
+            max = TOP_MAX;
+        }
 
         int where = gandalfStaff.getCurrentPosition();
-        while(!(where >= TOP_MIN && where <= TOP_MAX)) {
-            if (where > TOP_MAX) {
+        while(!(where >= min && where <= max)) {
+            if (where > max) {
                 gandalfStaff.setPower(-1.0);
-            } else if (where < TOP_MIN) {
+            } else if (where < min) {
                 gandalfStaff.setPower(1.0);
             }
         }
@@ -207,11 +258,44 @@ public class HunkOfMetal {
 
     }
 
-
-
-
-
+    //DcMotor turnTable;
+    //NormalizedColorSensor sensorColor;
     // TODO: spin turntable until blue or red color
+    public void clawForward()
+    {
+        NormalizedRGBA colors = sensorColor.getNormalizedColors();
+        // if black turn left, if blue turn right, if green turn off
+        if(black.isTargetColor(colors))
+        {
+            turnTable.setPower(0.5);
+        }
+        else if(blue.isTargetColor(colors))
+        {
+            turnTable.setPower(-0.5);
+        }
+        else
+        {
+            turnTable.setPower(0.0);
+        }
+    }
+
+    public void clawBackward()
+    {
+        NormalizedRGBA colors = sensorColor.getNormalizedColors();
+        // if black turn right, if red turn left, if green turn off
+        if(black.isTargetColor(colors))
+        {
+            turnTable.setPower(-0.5);
+        }
+        else if(red.isTargetColor(colors))
+        {
+            turnTable.setPower(0.5);
+        }
+        else
+        {
+            turnTable.setPower(0.0);
+        }
+    }
 
     // TODO: open and close claw
 }

@@ -11,6 +11,8 @@ import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.checkerframework.checker.units.qual.min;
+
 @TeleOp
 public class ManualDrive extends LinearOpMode
 {
@@ -58,6 +60,10 @@ public class ManualDrive extends LinearOpMode
 
        boolean encoderReset = false;
 
+        int level = 0;
+        boolean clampyopen = false;
+        double lastclamptrigger = 0.0;
+
         while (opModeIsActive()) {
             //Get the input from the gamepad controller
             double leftX =   -gamepad1.left_stick_x;
@@ -100,24 +106,12 @@ public class ManualDrive extends LinearOpMode
             // AND the arm is lift more than 90 tics
             // AND (the color sensor reads black or it reads red)
             NormalizedRGBA colors = sensorColor.getNormalizedColors();
-            if (leftPad && gandalfStaff.getCurrentPosition()>90 && (black.isTargetColor(colors) || red.isTargetColor(colors))) {
+            if (leftPad && gandalfStaff.getCurrentPosition()>150 ) {
                 turnTable.setPower(0.5);
-            } else if (rightPad && gandalfStaff.getCurrentPosition() >90 && (black.isTargetColor(colors) || blue.isTargetColor(colors))) {
+            } else if (rightPad && gandalfStaff.getCurrentPosition() >150 ) {
                 turnTable.setPower(-0.5);
             } else {
                 turnTable.setPower(0);
-            }
-
-            //manually controls gandalf's arm
-            boolean upPad = gamepad1. dpad_up;
-            boolean downPad = gamepad1. dpad_down;
-
-            if(upPad && gandalfStaff.getCurrentPosition()<1000){
-                gandalfStaff. setPower(-0.75);
-            }else if(downPad && !maggot.isPressed()){ // stop the down motion when limit is active
-                gandalfStaff. setPower(0.75);
-            }else{
-                gandalfStaff.setPower(0);
             }
 
             // reset encoder when the magnetic limit switch is active
@@ -133,27 +127,35 @@ public class ManualDrive extends LinearOpMode
                 encoderReset = false;
             }
 
-            //set places for gandalf's arm
-                //button y = 1 (ground)
-                //button b = 2 (first level)
-                //button a = 3 (second level)
-                //button x = 4 (third level)
-                //right bumper = 5 (topper)
-
-            boolean buttonY = gamepad2. y;
-            boolean buttonB = gamepad2. b;
-            boolean buttonA = gamepad2. a;
-            boolean buttonX = gamepad2. x;
-            boolean rightBumper = gamepad2. right_bumper;
-
-            if(buttonY){
-
-                        //TODO:Encoder stuff
-            }
+           if (gamepad1.y){
+              level = 0;
+           }else if(gamepad1.b){
+               level = 1;
+            }else if(gamepad1.a){
+                level = 2;
+            }else if(gamepad1.x){
+                level = 3;
+            }else if(gamepad1.right_bumper){
+               level = 4;
+           }
+           raiseArm(level);
 
             //manually controls clampy
-            float rightTrigger = gamepad1.right_trigger;
-            clampy. setPosition (rightTrigger);
+            if (gamepad1.right_trigger > 0 && lastclamptrigger == 0){
+                if(clampyopen==true){
+                    clampyopen=false;
+                }else{
+                    clampyopen=true;
+                }
+            }
+            lastclamptrigger = gamepad1.right_trigger;
+
+            if(clampyopen=true){
+                clampy.setPosition(0.0);
+            }else{
+                clampy.setPosition(1.0);
+            }
+
 
             if(gamepad1.left_bumper)
             {
@@ -172,4 +174,73 @@ public class ManualDrive extends LinearOpMode
         rightFront.setPower(0);
 
     }
+    // TODO: raise arm to 3 different positions
+    // variables declared, not the actual values bruh
+    final int TOP_MIN = 900;
+    final int TOP_MAX = 1000;
+    final int MIDDLE_MIN = 700;
+    final int MIDDLE_MAX = 600;
+    final int BOTTOM_MIN = 400;
+    final int BOTTOM_MAX = 300;
+    final int GROUND_MIN = -100;
+    final int GROUND_MAX = 100;
+
+    public void raiseArm(int level)
+    {
+        // TODO: if magnet sensor is active reset the arm encoder
+        if(maggot.isPressed())
+        {
+            gandalfStaff.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            gandalfStaff.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+
+        // if current position > top_max then set power to turn backwards
+        // if current position < top_min then set power to turn forwards
+
+        // TODO: depending on level set min and max variables and then use them
+        //      in the below loop instead of TOP_MIN TOP_MAX
+
+        int where = gandalfStaff.getCurrentPosition();
+
+        if(level == 0)
+        {
+            if(where > 100) {
+                gandalfStaff.setPower(0.1);
+            } else {
+                gandalfStaff.setPower(0);
+            }
+            return;
+        }
+
+        int min = 0;
+        int max = 0;
+        if(level == 1) {
+            min = BOTTOM_MIN;
+            max = BOTTOM_MAX;
+        } else if(level == 2)
+        {
+            min = MIDDLE_MIN;
+            max = MIDDLE_MAX;
+        } else if(level == 3)
+        {
+            min = TOP_MIN;
+            max = TOP_MAX;
+        }
+
+            if(where < min-40) {
+                gandalfStaff.setPower(-0.5);
+            } else if (where < min-30) {
+                gandalfStaff.setPower(-0.4);
+            } else if (where < min-20) {
+                gandalfStaff.setPower(-0.3);
+            } else if (where < min-10) {
+                gandalfStaff.setPower(-0.2);
+            } else if (where > max+50) {
+                gandalfStaff.setPower(0.1);
+            } else {
+                gandalfStaff.setPower(-0.075);
+            }
+
+    }
+
 }
