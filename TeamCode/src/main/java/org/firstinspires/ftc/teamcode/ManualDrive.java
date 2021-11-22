@@ -107,9 +107,9 @@ public class ManualDrive extends LinearOpMode
             // AND (the color sensor reads black or it reads red)
             NormalizedRGBA colors = sensorColor.getNormalizedColors();
             if (leftPad && gandalfStaff.getCurrentPosition()>150 ) {
-                turnTable.setPower(0.5);
+                turnTable.setPower(0.3);
             } else if (rightPad && gandalfStaff.getCurrentPosition() >150 ) {
-                turnTable.setPower(-0.5);
+                turnTable.setPower(-0.3);
             } else {
                 turnTable.setPower(0);
             }
@@ -141,21 +141,21 @@ public class ManualDrive extends LinearOpMode
            raiseArm(level);
 
             //manually controls clampy
-            if (gamepad1.right_trigger > 0 && lastclamptrigger == 0){
-                if(clampyopen==true){
-                    clampyopen=false;
-                }else{
-                    clampyopen=true;
-                }
-            }
-            lastclamptrigger = gamepad1.right_trigger;
 
-            if(clampyopen=true){
-                clampy.setPosition(0.0);
-            }else{
-                clampy.setPosition(1.0);
-            }
+            //if (gamepad1.right_trigger > 0 && lastclamptrigger == 0){
+            //    if(clampyopen==true){
+            //        clampyopen=false;
+            //    }else{
+            //        clampyopen=true;
+            //    }
+            //}
+            //llastclamptrigger = gamepad1.right_trigger;
 
+            if(gamepad1.dpad_up){
+                clampy.setPosition(0.50); // open
+            }else if(gamepad1.dpad_down){
+                clampy.setPosition(0.75); //close
+            }
 
             if(gamepad1.left_bumper)
             {
@@ -176,11 +176,11 @@ public class ManualDrive extends LinearOpMode
     }
     // TODO: raise arm to 3 different positions
     // variables declared, not the actual values bruh
-    final int TOP_MIN = 900;
+    final int TOP_MIN = 864;
     final int TOP_MAX = 1000;
-    final int MIDDLE_MIN = 700;
+    final int MIDDLE_MIN = 513;
     final int MIDDLE_MAX = 600;
-    final int BOTTOM_MIN = 400;
+    final int BOTTOM_MIN = 216;
     final int BOTTOM_MAX = 300;
     final int GROUND_MIN = -100;
     final int GROUND_MAX = 100;
@@ -238,7 +238,7 @@ public class ManualDrive extends LinearOpMode
             } else if (where > max+50) {
                 gandalfStaff.setPower(0.1);
             } else {
-                gandalfStaff.setPower(-0.075);
+                gandalfStaff.setPower(-0.13);
             }
 
     }
