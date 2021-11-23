@@ -60,13 +60,10 @@ public class ManualDrive extends LinearOpMode
         turnTable.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         waitForStart();
-
-       boolean encoderReset = false;
-
+        clampy.setPosition(0.52);
+        boolean encoderReset = false;
         int level = 0;
-        boolean clampyopen = false;
-        double lastclamptrigger = 0.0;
-
+        int turnPosition = 0;
         while (opModeIsActive()) {
             //Get the input from the gamepad controller
             double leftX =   -gamepad1.left_stick_x;
@@ -80,23 +77,6 @@ public class ManualDrive extends LinearOpMode
             rightBack.setPower(leftX - rightY + rightX);
             rightFront.setPower(leftX - rightY - rightX);
 
-            //double leftX =   gamepad1.left_stick_x;
-            //double leftY =   gamepad1.left_stick_y;
-            //double rightX =  -gamepad1.right_stick_x;
-            //double rightY =  gamepad1.right_stick_y;
-            // Setting the motor power based on the input
-            //leftBack.setPower(rightX + rightY + leftX);
-            //leftFront.setPower(rightX + rightY - leftX);
-            //rightBack.setPower(rightX - rightY + leftX);
-            //rightFront.setPower(rightX - rightY - leftX);
-
-
-            //leftX_G1 = -gamepad1.left_stick_x;
-            //leftY_G1 = gamepad1.left_stick_y;
-            //rightX_G1 = -gamepad1.right_stick_x;
-            //rightY_G1 = -gamepad1.right_stick_y;
-
-
             //manually controls turntable
             boolean leftPad = gamepad1. dpad_left;
             boolean rightPad = gamepad1. dpad_right;
@@ -109,13 +89,14 @@ public class ManualDrive extends LinearOpMode
             // AND the arm is lift more than 90 tics
             // AND (the color sensor reads black or it reads red)
             NormalizedRGBA colors = sensorColor.getNormalizedColors();
-            if (leftPad && gandalfStaff.getCurrentPosition()>150 ) {
-                turnTable.setPower(0.3);
-            } else if (rightPad && gandalfStaff.getCurrentPosition() >150 ) {
-                turnTable.setPower(-0.3);
-            } else {
-                turnTable.setPower(0);
+            if(gandalfStaff.getCurrentPosition() >= STAFF_TURN_MIN) {
+                if (leftPad) {
+                    turnPosition = 0;
+                } else if (rightPad) {
+                    turnPosition = 1;
+                }
             }
+            turnTable(turnPosition);
 
             // reset encoder when the magnetic limit switch is active
 
@@ -155,7 +136,7 @@ public class ManualDrive extends LinearOpMode
             //llastclamptrigger = gamepad1.right_trigger;
 
             if(gamepad1.dpad_up){
-                clampy.setPosition(0.51); // open
+                clampy.setPosition(0.52); // open
             }else if(gamepad1.dpad_down){
                 clampy.setPosition(0.71); //close
             }
@@ -248,6 +229,7 @@ public class ManualDrive extends LinearOpMode
     }
 
     final int STAFF_TURN_MIN = 150;
+    final int TURN_POSITION_1 = -325;
     public void turnTable(int position) {
         if(gandalfStaff.getCurrentPosition() < STAFF_TURN_MIN) {
             return;
@@ -255,13 +237,23 @@ public class ManualDrive extends LinearOpMode
 
         int tablePosition = turnTable.getCurrentPosition();
         if(position == 1) {
-            if(tablePosition > -200) {
-                turnTable.setPower(0.4);
-            } else if(tablePosition < -300) {
+            if(tablePosition > TURN_POSITION_1 + 40) {
                 turnTable.setPower(-0.4);
+            } else if (tablePosition > TURN_POSITION_1 + 20) {
+                turnTable.setPower(-0.3);
+            } else if (tablePosition > TURN_POSITION_1 + 10) {
+                turnTable.setPower(-0.2);
+            } else if(tablePosition < TURN_POSITION_1 - 40) {
+                turnTable.setPower(0.4);
+            } else if(tablePosition < TURN_POSITION_1 - 20) {
+                turnTable.setPower(0.3);
+            } else if(tablePosition < TURN_POSITION_1 - 10) {
+                turnTable.setPower(0.2);
             } else {
                 turnTable.setPower(0.0);
             }
+        } else {
+            turnTable.setPower(0.0);
         }
 
 
