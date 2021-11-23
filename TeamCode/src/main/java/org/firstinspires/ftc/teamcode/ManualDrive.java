@@ -54,9 +54,12 @@ public class ManualDrive extends LinearOpMode
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        gandalfStaff.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        gandalfStaff.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        turnTable.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        turnTable.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         waitForStart();
-       gandalfStaff.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-       gandalfStaff.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
        boolean encoderReset = false;
 
@@ -152,10 +155,11 @@ public class ManualDrive extends LinearOpMode
             //llastclamptrigger = gamepad1.right_trigger;
 
             if(gamepad1.dpad_up){
-                clampy.setPosition(0.50); // open
+                clampy.setPosition(0.51); // open
             }else if(gamepad1.dpad_down){
-                clampy.setPosition(0.75); //close
+                clampy.setPosition(0.71); //close
             }
+            telemetry.addData("clamp", clampy.getPosition());
 
             if(gamepad1.left_bumper)
             {
@@ -243,4 +247,23 @@ public class ManualDrive extends LinearOpMode
 
     }
 
+    final int STAFF_TURN_MIN = 150;
+    public void turnTable(int position) {
+        if(gandalfStaff.getCurrentPosition() < STAFF_TURN_MIN) {
+            return;
+        }
+
+        int tablePosition = turnTable.getCurrentPosition();
+        if(position == 1) {
+            if(tablePosition > -200) {
+                turnTable.setPower(0.4);
+            } else if(tablePosition < -300) {
+                turnTable.setPower(-0.4);
+            } else {
+                turnTable.setPower(0.0);
+            }
+        }
+
+
+    }
 }

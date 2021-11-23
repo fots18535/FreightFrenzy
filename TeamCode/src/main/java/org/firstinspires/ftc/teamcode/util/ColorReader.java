@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
 import org.firstinspires.ftc.teamcode.ColorTester;
 
-@TeleOp
+@TeleOp(group = "util")
 public class ColorReader extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

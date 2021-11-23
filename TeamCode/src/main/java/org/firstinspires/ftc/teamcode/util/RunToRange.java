@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-@TeleOp
+@TeleOp(group = "util")
 public class RunToRange extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

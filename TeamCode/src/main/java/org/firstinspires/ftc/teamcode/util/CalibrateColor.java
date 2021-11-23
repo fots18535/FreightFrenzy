@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import java.util.ArrayList;
 import java.util.List;
 
-@TeleOp
+@TeleOp(group = "util")
 public class CalibrateColor extends LinearOpMode {
 
     //ColorSensor sensorColor;
