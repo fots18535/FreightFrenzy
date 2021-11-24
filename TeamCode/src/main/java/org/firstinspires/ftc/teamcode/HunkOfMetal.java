@@ -4,8 +4,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 public class HunkOfMetal {
@@ -19,6 +21,7 @@ public class HunkOfMetal {
     TouchSensor maggot;
     DcMotor turnTable;
     DcMotor eyeball;
+    Servo clampy;
     NormalizedColorSensor sensorColor;
     ColorTester black;
     ColorTester red;
@@ -41,19 +44,30 @@ public class HunkOfMetal {
         leftFront = mode.hardwareMap.get(DcMotor.class, "leftFront");
         rightBack = mode.hardwareMap.get(DcMotor.class, "rightBack");
         rightFront = mode.hardwareMap.get(DcMotor.class, "rightFront");
+
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         gandalfStaff = mode.hardwareMap.get(DcMotor.class, "staff");
         maggot = mode.hardwareMap.get(TouchSensor.class, "maggot");
         turnTable = mode.hardwareMap. get(DcMotor.class, "turnTable");
         eyeball = mode.hardwareMap.get(DcMotor.class, "eyeball");
+        clampy = mode.hardwareMap.get(Servo.class, "clampy");
+
+        gandalfStaff.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        gandalfStaff.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        turnTable.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        turnTable.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         sensorColor = mode.hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
         black = new ColorTester(106.6f,233.1f,0.201f,0.493f,0.009f,0.015f);
         red = new ColorTester(0,1,0,1,0,1);
         blue = new ColorTester(0,1,0,1,0,1);
         green = new ColorTester(0,1,0,1,0,1);
+
+        clampy.setPosition(0.52);
         gyro.startGyro();
     }
 
@@ -62,9 +76,9 @@ public class HunkOfMetal {
     // Negative power slides right
     public void chaChaRealSmooth(double power, double length) {
         // Reset the encoder to 0
-        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         // Tells the motor to run until we turn it off
-        rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Turn on motors to slide
         leftBack.setPower(-power);
@@ -75,7 +89,7 @@ public class HunkOfMetal {
         // Slide until encoder ticks are sufficient
         while(mode.opModeIsActive()) {
             //absolute value of getCurrentPosition()
-            int tics = rightBack.getCurrentPosition();
+            int tics = leftFront.getCurrentPosition();
             if (tics < 0) {
                 tics = tics * -1;
             }
@@ -95,9 +109,9 @@ public class HunkOfMetal {
 
     public void forward(double power, double length){
         // Reset the encoder to 0
-        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         // Tells the motor to run until we turn it off
-        rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         gyro.reset();
         // Setting the motor power based on the input
@@ -106,7 +120,7 @@ public class HunkOfMetal {
         // Go forward and park behind the line
         while(mode.opModeIsActive()) {
             //absolute value of getCurrentPosition()
-            int tics = rightBack.getCurrentPosition();
+            int tics = leftFront.getCurrentPosition();
             if (tics < 0) {
                 tics = tics * -1;
             }
