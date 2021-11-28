@@ -93,13 +93,13 @@ public class ManualDrive extends LinearOpMode
             // AND (the color sensor reads black or it reads red)
             NormalizedRGBA colors = sensorColor.getNormalizedColors();
             if(gandalfStaff.getCurrentPosition() >= STAFF_TURN_MIN) {
-                if (gamepad2.dpad_down) {
+                if (gamepad1.dpad_right) {
                     turnPosition = 0;
-                } else if (gamepad2.dpad_left) {
+                } else if (gamepad1.dpad_up) {
                     turnPosition = 1;
-                } else if (gamepad2.dpad_up) {
+                } else if (gamepad1.dpad_left) {
                     turnPosition = 2;
-                } else if (gamepad2.dpad_right) {
+                } else if (gamepad1.dpad_down) {
                     turnPosition = -1;
                 }
             }
@@ -121,35 +121,26 @@ public class ManualDrive extends LinearOpMode
             }
 
            if (gamepad1.y){
-              level = 0;
+              level = 3;
            }else if(gamepad1.b){
-               level = 1;
+               level = 2;
             }else if(gamepad1.a){
-                level = 2;
+                level = 1;
             }else if(gamepad1.x){
-                level = 3;
-            }else if(gamepad1.right_bumper){
-               level = 4;
-           }
+                level = 0;
+            }
+
            raiseArm(level);
 
             //manually controls clampy
 
-            if(gamepad1.dpad_up){
+            if(gamepad1.right_bumper){
                 clampy.setPosition(0.52); // open
-            }else if(gamepad1.dpad_down){
-                clampy.setPosition(0.71); //close
+            }else if(gamepad1.left_bumper){
+                clampy.setPosition(0.75); //close
             }
             telemetry.addData("clamp", clampy.getPosition());
-
-            if(gamepad1.left_bumper)
-            {
-                eyeball.setPower(1.0);
-            }
-            else
-            {
-                eyeball.setPower(0.0);
-            }
+            eyeball.setPower(gamepad1.right_trigger);
         }
 
         // Stop the motors
