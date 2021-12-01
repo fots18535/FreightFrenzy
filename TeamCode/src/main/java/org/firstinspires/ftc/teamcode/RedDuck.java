@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Autonomous
-public class SimpleAutonomous extends LinearOpMode {
+public class RedDuck extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         HunkOfMetal hunk = new HunkOfMetal(this);
@@ -12,8 +12,17 @@ public class SimpleAutonomous extends LinearOpMode {
 
         waitForStart();
 
-        hunk.forward(0.5, 12);
-        hunk.turnLeft(90, 0.5);
-        hunk.chaChaRealSmooth(0.5, 12);
+        hunk.chaChaRealSmooth(1.0,25);
+
+
+        hunk.closeClampy();
+        hunk.forward(1.0, 23);
+        hunk.raiseArm(2);
+
+        hunk.openClampy();
+        hunk.forward(-1, 20);
+        hunk.turnRight(75,1);
+        hunk.forward(1,48);
     }
+
 }

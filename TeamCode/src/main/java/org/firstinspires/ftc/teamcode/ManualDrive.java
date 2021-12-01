@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import android.graphics.Color;
+import android.text.method.Touch;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -24,6 +25,8 @@ public class ManualDrive extends LinearOpMode {
     DcMotor gandalfStaff;
     Servo clampy;
     TouchSensor maggot;
+    TouchSensor touchyFront;
+    TouchSensor touchyBack;
     DcMotor eyeball;
 
     @Override
@@ -37,8 +40,8 @@ public class ManualDrive extends LinearOpMode {
         clampy = hardwareMap.get(Servo.class, "clampy");
         maggot = hardwareMap.get(TouchSensor.class, "maggot");
         eyeball = hardwareMap.get(DcMotor.class, "eyeball");
-
-        NormalizedColorSensor sensorColor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
+        touchyBack = hardwareMap.get(TouchSensor.class, "touchyBack");
+        touchyFront = hardwareMap.get(TouchSensor.class, "touchyFront");
 
         ColorTester black = new ColorTester(106.6f, 233.1f, 0.201f, 0.493f, 0.009f, 0.015f);
         ColorTester red = new ColorTester(0, 1, 0, 1, 0, 1);
@@ -90,11 +93,11 @@ public class ManualDrive extends LinearOpMode {
             // Make sure arm is up X tics before turning
             if (gandalfStaff.getCurrentPosition() >= STAFF_TURN_MIN) {
                 if (gamepad1.dpad_right) {
-                    turnPosition = 0;
+                    turnPosition = 2;
                 } else if (gamepad1.dpad_up) {
                     turnPosition = 1;
                 } else if (gamepad1.dpad_left) {
-                    turnPosition = 2;
+                    turnPosition = 0;
                 } else if (gamepad1.dpad_down) {
                     turnPosition = -1;
                 }
@@ -146,8 +149,14 @@ public class ManualDrive extends LinearOpMode {
             /**********************************/
             /** Duck Spinner Control Section **/
             /**********************************/
+    if(gamepad1.right_trigger>0){
+        eyeball.setPower(gamepad1.right_trigger);
+    }else if(gamepad1.left_trigger>0){
+        eyeball.setPower(-gamepad1.left_trigger);
+    }else{
+        eyeball.setPower(0);
+    }
 
-            eyeball.setPower(gamepad1.right_trigger);
 
             telemetry.update();
         }
@@ -224,9 +233,9 @@ public class ManualDrive extends LinearOpMode {
     }
 
     final int STAFF_TURN_MIN = 150;
-    final int TURN_POSITION_0 = 20;
+    final int TURN_POSITION_0 = 50;
     final int TURN_POSITION_1 = -350;
-    final int TURN_POSITION_2 = -740;
+    final int TURN_POSITION_2 = -750;
 
     public void turnTable(int position) {
         if (!(position == 0 || position == 1 || position == 2)) {
@@ -235,6 +244,24 @@ public class ManualDrive extends LinearOpMode {
         if (gandalfStaff.getCurrentPosition() < STAFF_TURN_MIN) {
             return;
         }
+        // TODO: if you are at position 0 make sure the button1 isn't pushed
+        if(position == 0){
+            if(touchyFront.isPressed()){
+                turnTable.setPower(0);
+                turnTable.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                turnTable.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                return;
+            }
+
+        }
+
+        if(position == 2){
+            if(touchyBack.isPressed()){
+                turnTable.setPower(0);
+                return;
+            }
+        }
+        // TODO: if you are at position 2 make sure the button2 isn't pushed
 
         int tablePosition = turnTable.getCurrentPosition();
         int turnTo = 0;
