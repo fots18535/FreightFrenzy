@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.util;
 
 import android.graphics.Color;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
@@ -10,6 +11,7 @@ import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import java.util.ArrayList;
 import java.util.List;
 
+@Disabled
 @TeleOp(group = "util")
 public class CalibrateColor extends LinearOpMode {
 

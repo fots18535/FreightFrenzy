@@ -91,6 +91,9 @@ public class Gyro2 {
                 // do noting... just wait
                 opMode.idle();
             }
+
+            opMode.telemetry.addData("Gyro Mode:", "ready");
+            opMode.telemetry.update();
         }
 
         // send a message to the phone about the calibration status

@@ -29,7 +29,7 @@ public class HunkOfMetal {
 
 
     float ticksPerInch = 122.15f;
-
+    float gyroCorrection = -0.04f;
     public HunkOfMetal (LinearOpMode op) {
         mode = op;
     }
@@ -69,6 +69,15 @@ public class HunkOfMetal {
         gyro.startGyro();
     }
 
+    public double ramp(double power, long startTime) {
+        // ramp for 0.75 seconds
+        long t = System.currentTimeMillis() - startTime;
+        if(t >= 750) {
+            return power;
+        } else {
+            return power / 750 * t;
+        }
+    }
 
     // Positive power slides left
     // Negative power slides right
@@ -78,19 +87,23 @@ public class HunkOfMetal {
         // Tells the motor to run until we turn it off
         leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        // Turn on motors to slide
-        leftBack.setPower(-power);
-        leftFront.setPower(power);
-        rightBack.setPower(-power);
-        rightFront.setPower(power);
 
         // Slide until encoder ticks are sufficient
+        gyro.reset();
+        long startTime = System.currentTimeMillis();
         while(mode.opModeIsActive()) {
             //absolute value of getCurrentPosition()
             int tics = leftFront.getCurrentPosition();
             if (tics < 0) {
                 tics = tics * -1;
             }
+
+            double rpower = ramp(power, startTime);
+            float rightX = gyroCorrection * (float) gyro.getAngle();
+            leftBack.setPower(rightX - rpower);
+            leftFront.setPower(rightX + rpower);
+            rightBack.setPower(rightX - rpower);
+            rightFront.setPower(rightX + rpower);
 
             if (tics > length*ticksPerInch){
                 break;
@@ -112,11 +125,11 @@ public class HunkOfMetal {
         leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         gyro.reset();
-        // Setting the motor power based on the input
-        motorsForward(power);
+        long startTime = System.currentTimeMillis();
 
-        // Go forward and park behind the line
+        // Go forward until tics reached
         while(mode.opModeIsActive()) {
+
             //absolute value of getCurrentPosition()
             int tics = leftFront.getCurrentPosition();
             if (tics < 0) {
@@ -125,31 +138,17 @@ public class HunkOfMetal {
             //telemetry.addData("debug tics", tics);
             //telemetry.addData("debug compare to ", length*ticksPerInch);
 
-
             if (tics > length*ticksPerInch){
                 break;
             }
 
-            // TODO: get the angle and adjust the power to correct
-            // float rightX = -0.022f * (float) gyro.getAngle();
-           // leftBack.setPower(rightX + power);
-            // leftFront.setPower(rightX + power);
-            // rightBack.setPower(rightX - power);
-            // rightFront.setPower(rightX - power);
-
-             // Check the angle and correct if needed
-           if (gyro.getAngle() >4) {
-                gyro.store();
-                turnRight(3, .3);
-               gyro.recall();
-               motorsForward(power);
-          } else if (gyro.getAngle() <-4) {
-               gyro.store();
-                turnLeft(3, .3);
-                gyro.recall();
-                motorsForward(power);
-           }
-
+            // Get the angle and adjust the power to correct
+            double rpower = ramp(power, startTime);
+            float rightX = gyroCorrection * (float) gyro.getAngle();
+            leftBack.setPower(rightX - rpower);
+            leftFront.setPower(rightX - rpower);
+            rightBack.setPower(rightX + rpower);
+            rightFront.setPower(rightX + rpower);
 
             mode.idle();
         }
