@@ -11,18 +11,16 @@ public class RedDuck extends LinearOpMode {
         hunk.initialize();
 
         waitForStart();
-
-        hunk.chaChaRealSmooth(1.0,25);
-
-
         hunk.closeClampy();
-        hunk.forward(1.0, 23);
+        hunk.chaChaRealSmooth(1,25);
+        //SPIN DUCK WHEEL, spin right
+        hunk.chaChaRealSmooth(-1,16);
+        hunk.forward(-0.5, 6);
+        hunk.chaChaRealSmooth(-1,23);
         hunk.raiseArm(2);
-
+        hunk.forward(1,21);
         hunk.openClampy();
-        hunk.forward(-1, 20);
-        hunk.turnRight(75,1);
-        hunk.forward(1,48);
-    }
-
+        hunk.forward(-1,23);
+        hunk.chaChaRealSmooth(-1, 60);
+}
 }

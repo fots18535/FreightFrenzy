@@ -80,9 +80,9 @@ public class HunkOfMetal {
 
         // Turn on motors to slide
         leftBack.setPower(-power);
-        leftFront.setPower(power*0.8);
+        leftFront.setPower(power);
         rightBack.setPower(-power);
-        rightFront.setPower(power*0.8);
+        rightFront.setPower(power);
 
         // Slide until encoder ticks are sufficient
         while(mode.opModeIsActive()) {
@@ -218,8 +218,8 @@ public class HunkOfMetal {
     // variables declared, not the actual values bruh
     final int TOP_MIN = 864;
     final int TOP_MAX = 1000;
-    final int MIDDLE_MIN = 513;
-    final int MIDDLE_MAX = 600;
+    final int MIDDLE_MIN = 575;
+    final int MIDDLE_MAX = 625;
     final int BOTTOM_MIN = 216;
     final int BOTTOM_MAX = 300;
     final int GROUND_MIN = -100;
@@ -269,13 +269,13 @@ public class HunkOfMetal {
             } else if (where < min - 30) {
                 gandalfStaff.setPower(-0.4);
             } else if (where < min - 20) {
-                gandalfStaff.setPower(-0.3);
+                gandalfStaff.setPower(-0.4);
             } else if (where < min - 10) {
-                gandalfStaff.setPower(-0.2);
+                gandalfStaff.setPower(-0.3);
             } else if (where > max + 50) {
-                gandalfStaff.setPower(0.1);
+                gandalfStaff.setPower(0.2);
             } else {
-                gandalfStaff.setPower(-0.13);
+                gandalfStaff.setPower(-0.2);
             }
 
         }

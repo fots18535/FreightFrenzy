@@ -13,13 +13,16 @@ public class BlueNoDuck extends LinearOpMode {
         waitForStart();
 
         hunk.closeClampy();
-        hunk.forward(1.0, 23);
-        hunk.raiseArm(2);
         hunk.chaChaRealSmooth(-1.0,26);
+        sleep(1000);
+        hunk.raiseArm(2);
+        hunk.forward(1.0, 21);
         hunk.openClampy();
-        hunk.forward(-1, 20);
-        hunk.turnLeft(75,1);
-        hunk.forward(1,48);
+        sleep(2000);
+        hunk.forward(-1, 23);
+        sleep(1000);
+        hunk.chaChaRealSmooth(1,65);
+
     }
 
 }
