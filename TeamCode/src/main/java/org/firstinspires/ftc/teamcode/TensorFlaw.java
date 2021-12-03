@@ -80,7 +80,7 @@ public class TensorFlaw {
             // to artificially zoom in to the center of image.  For best results, the "aspectRatio" argument
             // should be set to the value of the images used to create the TensorFlow Object Detection model
             // (typically 16/9).
-            tfod.setZoom(2.5, 16.0/9.0);
+            tfod.setZoom(1.5, 16.0/9.0);
         }
     }
 
@@ -109,7 +109,6 @@ public class TensorFlaw {
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
-
         // Loading trackables is not necessary for the TensorFlow Object Detection engine.
     }
 

@@ -63,21 +63,21 @@ public class Autonmous extends LinearOpMode {
 
         // if statement boi??
 
-        hunk.chaChaRealSmooth(1, 24);
+        //hunk.chaChaRealSmooth(1, 24);
 
         // spin xoxo gossip girl
 
-        hunk.turnLeft(24, 1);
+        //hunk.turnLeft(24, 1);
 
         //back up 2 wall
 
-        hunk.chaChaRealSmooth(1,40);
-        hunk.turnLeft(12,1);
+        //hunk.chaChaRealSmooth(1,40);
+        //hunk.turnLeft(12,1);
 
         //drop item like its hot
 
-        hunk.turnRight(30,1);
-        hunk.chaChaRealSmooth(-1,12);
+        //hunk.turnRight(30,1);
+        //hunk.chaChaRealSmooth(-1,12);
 
     }
 }
