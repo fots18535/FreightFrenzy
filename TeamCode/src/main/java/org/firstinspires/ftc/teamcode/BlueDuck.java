@@ -14,6 +14,12 @@ public class BlueDuck extends LinearOpMode {
         hunk.forward(1,40);
         hunk.turnLeft(90, 0.5);
         hunk.raiseArm(2);
+        hunk.forward(1, 11);
+        hunk.openClampy();
+        hunk.forward(-1,40);
+        hunk.chaChaRealSmooth(-1, 29);
+        hunk.spinEyeballCCW();
+        hunk.forward(1,120);
 
         //hunk.chaChaRealSmooth(-1.0,25);
        // hunk.closeClampy();

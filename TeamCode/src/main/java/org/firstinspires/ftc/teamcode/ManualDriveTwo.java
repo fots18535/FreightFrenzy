@@ -1,21 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.graphics.Color;
-import android.text.method.Touch;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
-import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-import org.checkerframework.checker.units.qual.min;
-
 @TeleOp
-public class ManualDrive extends LinearOpMode {
+public class ManualDriveTwo extends LinearOpMode {
 
     DcMotor leftBack;
     DcMotor leftFront;
@@ -92,25 +84,18 @@ public class ManualDrive extends LinearOpMode {
 
             // Make sure arm is up X tics before turning
             if (gandalfStaff.getCurrentPosition() >= STAFF_TURN_MIN) {
-                if(gamepad1.dpad_right){
-                    turnTable.setPower(-0.5);
-                }else if(gamepad1.dpad_left){
-                    turnTable.setPower(0.5);
-                }else{
-                    turnTable.setPower(0);
+                if (gamepad2.dpad_right) {
+                    turnPosition = 2;
+                } else if (gamepad2.dpad_up) {
+                    turnPosition = 1;
+                } else if (gamepad2.dpad_left) {
+                    turnPosition = 0;
+                } else if (gamepad2.dpad_down) {
+                    turnPosition = -1;
                 }
-                //if (gamepad1.dpad_right) {
-                //    turnPosition = 2;
-                //} else if (gamepad1.dpad_up) {
-                //    turnPosition = 1;
-                //} else if (gamepad1.dpad_left) {
-                //    turnPosition = 0;
-                //} else if (gamepad1.dpad_down) {
-                //    turnPosition = -1;
-               // }
             }
-            //turnTable(turnPosition);
-           // telemetry.addData("table", turnTable.getCurrentPosition());
+            turnTable(turnPosition);
+            telemetry.addData("table", turnTable.getCurrentPosition());
 
 
             /*******************************/
@@ -127,13 +112,13 @@ public class ManualDrive extends LinearOpMode {
             }
 
             // set arm to certain positions based on controls
-            if (gamepad1.y) {
+            if (gamepad2.y) {
                 level = 3;
-            } else if (gamepad1.b) {
+            } else if (gamepad2.b) {
                 level = 2;
-            } else if (gamepad1.a) {
+            } else if (gamepad2.a) {
                 level = 1;
-            } else if (gamepad1.x) {
+            } else if (gamepad2.x) {
                 level = 0;
             }
 
@@ -145,9 +130,9 @@ public class ManualDrive extends LinearOpMode {
             /** Claw Control Section *******/
             /*******************************/
 
-            if (gamepad1.right_bumper) {
+            if (gamepad2.right_bumper) {
                 clampy.setPosition(0.52); // open
-            } else if (gamepad1.left_bumper) {
+            } else if (gamepad2.left_bumper) {
                 clampy.setPosition(0.75); //close
             }
             telemetry.addData("clamp", clampy.getPosition());

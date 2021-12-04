@@ -30,7 +30,8 @@ public class HunkOfMetal {
 
     float ticksPerInch = 122.15f;
     float gyroCorrection = -0.04f;
-    public HunkOfMetal (LinearOpMode op) {
+
+    public HunkOfMetal(LinearOpMode op) {
         mode = op;
     }
 
@@ -51,7 +52,7 @@ public class HunkOfMetal {
 
         gandalfStaff = mode.hardwareMap.get(DcMotor.class, "staff");
         maggot = mode.hardwareMap.get(TouchSensor.class, "maggot");
-        turnTable = mode.hardwareMap. get(DcMotor.class, "turnTable");
+        turnTable = mode.hardwareMap.get(DcMotor.class, "turnTable");
         eyeball = mode.hardwareMap.get(DcMotor.class, "eyeball");
         clampy = mode.hardwareMap.get(Servo.class, "clampy");
 
@@ -60,10 +61,10 @@ public class HunkOfMetal {
         turnTable.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turnTable.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        black = new ColorTester(106.6f,233.1f,0.201f,0.493f,0.009f,0.015f);
-        red = new ColorTester(0,1,0,1,0,1);
-        blue = new ColorTester(0,1,0,1,0,1);
-        green = new ColorTester(0,1,0,1,0,1);
+        black = new ColorTester(106.6f, 233.1f, 0.201f, 0.493f, 0.009f, 0.015f);
+        red = new ColorTester(0, 1, 0, 1, 0, 1);
+        blue = new ColorTester(0, 1, 0, 1, 0, 1);
+        green = new ColorTester(0, 1, 0, 1, 0, 1);
 
         clampy.setPosition(0.52);
         gyro.startGyro();
@@ -72,7 +73,7 @@ public class HunkOfMetal {
     public double ramp(double power, long startTime) {
         // ramp for 0.75 seconds
         long t = System.currentTimeMillis() - startTime;
-        if(t >= 750) {
+        if (t >= 750) {
             return power;
         } else {
             return power / 750 * t;
@@ -91,7 +92,7 @@ public class HunkOfMetal {
         // Slide until encoder ticks are sufficient
         gyro.reset();
         long startTime = System.currentTimeMillis();
-        while(mode.opModeIsActive()) {
+        while (mode.opModeIsActive()) {
             //absolute value of getCurrentPosition()
             int tics = leftFront.getCurrentPosition();
             if (tics < 0) {
@@ -105,7 +106,7 @@ public class HunkOfMetal {
             rightBack.setPower(rightX - rpower);
             rightFront.setPower(rightX + rpower);
 
-            if (tics > length*ticksPerInch){
+            if (tics > length * ticksPerInch) {
                 break;
             }
             mode.idle();
@@ -118,7 +119,7 @@ public class HunkOfMetal {
         rightFront.setPower(0);
     }
 
-    public void forward(double power, double length){
+    public void forward(double power, double length) {
         // Reset the encoder to 0
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         // Tells the motor to run until we turn it off
@@ -128,7 +129,7 @@ public class HunkOfMetal {
         long startTime = System.currentTimeMillis();
 
         // Go forward until tics reached
-        while(mode.opModeIsActive()) {
+        while (mode.opModeIsActive()) {
 
             //absolute value of getCurrentPosition()
             int tics = leftFront.getCurrentPosition();
@@ -138,7 +139,7 @@ public class HunkOfMetal {
             //telemetry.addData("debug tics", tics);
             //telemetry.addData("debug compare to ", length*ticksPerInch);
 
-            if (tics > length*ticksPerInch){
+            if (tics > length * ticksPerInch) {
                 break;
             }
 
@@ -159,7 +160,7 @@ public class HunkOfMetal {
         rightFront.setPower(0);
     }
 
-    public void motorsForward( double power) {
+    public void motorsForward(double power) {
         leftBack.setPower(-power);
         leftFront.setPower(-power);
         rightBack.setPower(power);
@@ -175,8 +176,8 @@ public class HunkOfMetal {
         rightFront.setPower(-speed);
 
         // Go forward and park behind the line
-        while(mode.opModeIsActive()) {
-            if (gyro.getAngle()<= -howFar){ //change
+        while (mode.opModeIsActive()) {
+            if (gyro.getAngle() <= -howFar) { //change
                 break;
             }
 
@@ -198,8 +199,8 @@ public class HunkOfMetal {
         rightFront.setPower(speed);
 
         // Go forward and park behind the line
-        while(mode.opModeIsActive()) {
-            if (gyro.getAngle()>= howFar){
+        while (mode.opModeIsActive()) {
+            if (gyro.getAngle() >= howFar) {
                 break;
             }
 
@@ -280,14 +281,26 @@ public class HunkOfMetal {
         }
     }
 
-public void openClampy() {
-    clampy.setPosition(0.52); // open
-}
+    public void openClampy() {
+        clampy.setPosition(0.52); // open
+    }
 
-public void closeClampy(){
+    public void closeClampy() {
         clampy.setPosition(0.75); //close
-}
+    }
     // TODO: open and close claw
+
+    public void spinEyeballCW() {
+        eyeball.setPower(1);
+        mode.sleep(5000);
+        eyeball.setPower(0);
+    }
+
+    public void spinEyeballCCW() {
+        eyeball.setPower(-1);
+        mode.sleep(5000);
+        eyeball.setPower(0);
+    }
 }
 
 
