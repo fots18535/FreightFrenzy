@@ -16,7 +16,7 @@ public class RedNoDuck extends LinearOpMode {
         hunk.chaChaRealSmooth(1.0,26);
         sleep(1000);
         hunk.raiseArm(2);
-        hunk.forward(1.0, 21);
+        hunk.forward(1.0, 19);
         hunk.openClampy();
         sleep(2000);
         hunk.forward(-1, 23);

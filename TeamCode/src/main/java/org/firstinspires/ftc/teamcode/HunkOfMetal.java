@@ -159,6 +159,45 @@ public class HunkOfMetal {
         rightBack.setPower(0);
         rightFront.setPower(0);
     }
+    public void forwardNoGyro(double power, double length) {
+        // Reset the encoder to 0
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        // Tells the motor to run until we turn it off
+        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
+        long startTime = System.currentTimeMillis();
+
+        // Go forward until tics reached
+        while (mode.opModeIsActive()) {
+
+            //absolute value of getCurrentPosition()
+            int tics = leftFront.getCurrentPosition();
+            if (tics < 0) {
+                tics = tics * -1;
+            }
+            //telemetry.addData("debug tics", tics);
+            //telemetry.addData("debug compare to ", length*ticksPerInch);
+
+            if (tics > length * ticksPerInch) {
+                break;
+            }
+
+            // Get the angle and adjust the power to correct
+            double rpower = ramp(power, startTime);
+            leftBack.setPower( - rpower);
+            leftFront.setPower( - rpower);
+            rightBack.setPower(rpower);
+            rightFront.setPower(rpower);
+
+            mode.idle();
+        }
+
+        leftBack.setPower(0);
+        leftFront.setPower(0);
+        rightBack.setPower(0);
+        rightFront.setPower(0);
+    }
 
     public void motorsForward(double power) {
         leftBack.setPower(-power);
@@ -292,13 +331,19 @@ public class HunkOfMetal {
 
     public void spinEyeballCW() {
         eyeball.setPower(1);
-        mode.sleep(5000);
+        long start = System.currentTimeMillis();
+        while(System.currentTimeMillis() - start < 2000 && mode.opModeIsActive()) {
+            mode.idle();
+        }
         eyeball.setPower(0);
     }
 
     public void spinEyeballCCW() {
         eyeball.setPower(-1);
-        mode.sleep(5000);
+        long start = System.currentTimeMillis();
+        while(System.currentTimeMillis() - start < 2000 && mode.opModeIsActive()) {
+            mode.idle();
+        }
         eyeball.setPower(0);
     }
 }

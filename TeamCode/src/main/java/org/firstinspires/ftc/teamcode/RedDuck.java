@@ -13,12 +13,13 @@ public class RedDuck extends LinearOpMode {
         waitForStart();
         hunk.closeClampy();
         hunk.chaChaRealSmooth(1,25);
-        hunk.spinEyeballCW();
+        hunk.spinEyeballCCW();
         hunk.chaChaRealSmooth(-1,16);
-        hunk.forward(-0.5, 6);
+        hunk.turnRight(10,0.5);
+        hunk.forwardNoGyro(-0.5, 12);
         hunk.chaChaRealSmooth(-1,23);
         hunk.raiseArm(2);
-        hunk.forward(1,21);
+        hunk.forward(1,17);
         hunk.openClampy();
         hunk.forward(-1,23);
         hunk.chaChaRealSmooth(-1, 60);
