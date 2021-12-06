@@ -150,7 +150,7 @@ public class ManualDriveDookie extends LinearOpMode {
             } else if(!gamepad1.dpad_left && !gamepad1.dpad_right) {
                 turnTable.setPower(0.0);
             }
-            telemetry.addData("table", turnTable.getCurrentPosition());
+            telemetry.addData("table", turnTable.getCurrentPosition() - zeropos);
 
 
             /*******************************/
@@ -311,6 +311,7 @@ public class ManualDriveDookie extends LinearOpMode {
                 return;
             }
         }
+
         // TODO: if you are at position 2 make sure the button2 isn't pushed
 
         int tablePosition = turnTable.getCurrentPosition() - zeropos;
@@ -325,11 +326,11 @@ public class ManualDriveDookie extends LinearOpMode {
         }
 
         if (tablePosition > turnTo + 40) {
-            turnTable.setPower(-0.5);
+            turnTable.setPower(-0.7);
         } else if (tablePosition > turnTo + 5) {
             turnTable.setPower(-0.3);
         } else if (tablePosition < turnTo - 40) {
-            turnTable.setPower(0.5);
+            turnTable.setPower(0.7);
         } else if (tablePosition < turnTo - 5) {
             turnTable.setPower(0.3);
         } else {
