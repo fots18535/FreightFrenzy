@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -25,8 +26,8 @@ public class ManualDrive extends LinearOpMode {
     DcMotor gandalfStaff;
     Servo clampy;
     TouchSensor maggot;
-    TouchSensor touchyFront;
-    TouchSensor touchyBack;
+    DigitalChannel touchyFront;
+    DigitalChannel touchyBack;
     DcMotor eyeball;
 
     @Override
@@ -40,9 +41,11 @@ public class ManualDrive extends LinearOpMode {
         clampy = hardwareMap.get(Servo.class, "clampy");
         maggot = hardwareMap.get(TouchSensor.class, "maggot");
         eyeball = hardwareMap.get(DcMotor.class, "eyeball");
-        touchyBack = hardwareMap.get(TouchSensor.class, "touchyBack");
-        touchyFront = hardwareMap.get(TouchSensor.class, "touchyFront");
+        touchyBack = hardwareMap.get(DigitalChannel.class, "touchyBack");
+        touchyFront = hardwareMap.get(DigitalChannel.class, "touchyFront");
 
+        touchyBack.setMode(DigitalChannel.Mode.INPUT);
+        touchyFront.setMode(DigitalChannel.Mode.INPUT);
         ColorTester black = new ColorTester(106.6f, 233.1f, 0.201f, 0.493f, 0.009f, 0.015f);
         ColorTester red = new ColorTester(0, 1, 0, 1, 0, 1);
         ColorTester blue = new ColorTester(0, 1, 0, 1, 0, 1);
@@ -93,21 +96,23 @@ public class ManualDrive extends LinearOpMode {
             // Make sure arm is up X tics before turning
             if (gandalfStaff.getCurrentPosition() >= STAFF_TURN_MIN) {
                 if(gamepad1.dpad_right){
-                    turnTable.setPower(-0.5);
+                    turnTable.setPower(-0.7);
                 }else if(gamepad1.dpad_left){
                     turnTable.setPower(0.5);
                 }else{
                     turnTable.setPower(0);
                 }
-                //if (gamepad1.dpad_right) {
-                //    turnPosition = 2;
-                //} else if (gamepad1.dpad_up) {
-                //    turnPosition = 1;
-                //} else if (gamepad1.dpad_left) {
-                //    turnPosition = 0;
-                //} else if (gamepad1.dpad_down) {
-                //    turnPosition = -1;
-               // }
+                /*
+                if (gamepad1.dpad_right) {
+                    turnPosition = 2;
+                } else if (gamepad1.dpad_up) {
+                    turnPosition = 1;
+                } else if (gamepad1.dpad_left) {
+                    turnPosition = 0;
+                } else if (gamepad1.dpad_down) {
+                    turnPosition = -1;
+                }
+                 */
             }
             //turnTable(turnPosition);
            // telemetry.addData("table", turnTable.getCurrentPosition());
@@ -253,7 +258,7 @@ public class ManualDrive extends LinearOpMode {
         }
         // TODO: if you are at position 0 make sure the button1 isn't pushed
         if(position == 0){
-            if(touchyFront.isPressed()){
+            if(touchyFront.getState() == false){
                 turnTable.setPower(0);
                 turnTable.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 turnTable.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -263,7 +268,7 @@ public class ManualDrive extends LinearOpMode {
         }
 
         if(position == 2){
-            if(touchyBack.isPressed()){
+            if(touchyBack.getState() == false){
                 turnTable.setPower(0);
                 return;
             }
