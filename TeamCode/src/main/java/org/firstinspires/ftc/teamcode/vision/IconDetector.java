@@ -214,8 +214,8 @@ public class IconDetector extends LinearOpMode
             Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);
 
             //threshold
-            Scalar lower = new Scalar(0,0,0);
-            Scalar upper = new Scalar(48,194,255);
+            Scalar lower = new Scalar(8,161,90);
+            Scalar upper = new Scalar(28,255,255);
             Core.inRange(hsv, lower, upper, mask);
 
             Imgproc.cvtColor(mask, mask3chan, Imgproc.COLOR_GRAY2RGB);

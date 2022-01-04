@@ -68,6 +68,7 @@ public class ManualDrive extends LinearOpMode {
         boolean encoderReset = false;
         int level = 0;
         int turnPosition = 0;
+        long ttableStart = 0;
         while (opModeIsActive()) {
 
             /*****************************/
@@ -96,10 +97,17 @@ public class ManualDrive extends LinearOpMode {
             // Make sure arm is up X tics before turning
             if (gandalfStaff.getCurrentPosition() >= STAFF_TURN_MIN) {
                 if(gamepad1.dpad_right){
-                    turnTable.setPower(-0.7);
+                    if(ttableStart == 0) {
+                        ttableStart = System.currentTimeMillis();
+                    }
+                    turnTable.setPower(ramp(-0.7, ttableStart));
                 }else if(gamepad1.dpad_left){
-                    turnTable.setPower(0.5);
+                    if(ttableStart == 0) {
+                        ttableStart = System.currentTimeMillis();
+                    }
+                    turnTable.setPower(ramp(0.5, ttableStart));
                 }else{
+                    ttableStart = 0;
                     turnTable.setPower(0);
                 }
                 /*
@@ -306,5 +314,15 @@ public class ManualDrive extends LinearOpMode {
             turnTable.setPower(0.0);
         }
 
+    }
+
+    public double ramp(double power, long startTime) {
+        // ramp for 0.75 seconds
+        long t = System.currentTimeMillis() - startTime;
+        if (t >= 500) {
+            return power;
+        } else {
+            return power / 500 * t;
+        }
     }
 }
