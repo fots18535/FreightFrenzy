@@ -64,7 +64,7 @@ public class ManualDrive extends LinearOpMode {
         turnTable.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         waitForStart();
-        clampy.setPosition(0.52);
+        clampy.setPosition(0.39);
         boolean encoderReset = false;
         int level = 0;
         int turnPosition = 0;
@@ -75,11 +75,17 @@ public class ManualDrive extends LinearOpMode {
             /** Driving Control Section **/
             /*****************************/
 
+            double slowSpeed = 1.0;
+            if(gamepad1.left_bumper){
+                slowSpeed = 0.5;
+            }else{
+                slowSpeed = 1.0;
+            }
             //Get the input from the gamepad controller
-            double leftX = gamepad1.left_stick_x;
-            double leftY = gamepad1.left_stick_y;
-            double rightX = -gamepad1.right_stick_x;
-            double rightY = gamepad1.right_stick_y;
+            double leftX = gamepad1.left_stick_x * slowSpeed;
+            double leftY = gamepad1.left_stick_y* slowSpeed;
+            double rightX = -gamepad1.right_stick_x* slowSpeed;
+            double rightY = gamepad1.right_stick_y* slowSpeed;
 
             leftBack.setPower(rightX + rightY + leftX);
             leftFront.setPower(rightX + rightY - leftX);
@@ -96,12 +102,13 @@ public class ManualDrive extends LinearOpMode {
 
             // Make sure arm is up X tics before turning
             if (gandalfStaff.getCurrentPosition() >= STAFF_TURN_MIN) {
-                if(gamepad2.dpad_right){
+                /*
+                if(gamepad2.dpad_right && touchyBack.getState()){
                     if(ttableStart == 0) {
                         ttableStart = System.currentTimeMillis();
                     }
                     turnTable.setPower(ramp(-0.7, ttableStart));
-                }else if(gamepad2.dpad_left){
+                }else if(gamepad2.dpad_left && touchyFront.getState()){
                     if(ttableStart == 0) {
                         ttableStart = System.currentTimeMillis();
                     }
@@ -109,8 +116,8 @@ public class ManualDrive extends LinearOpMode {
                 }else{
                     ttableStart = 0;
                     turnTable.setPower(0);
-                }
-                /*
+                }*/
+
                 if (gamepad1.dpad_right) {
                     turnPosition = 2;
                 } else if (gamepad1.dpad_up) {
@@ -120,10 +127,10 @@ public class ManualDrive extends LinearOpMode {
                 } else if (gamepad1.dpad_down) {
                     turnPosition = -1;
                 }
-                 */
+
             }
-            //turnTable(turnPosition);
-           // telemetry.addData("table", turnTable.getCurrentPosition());
+            turnTable(turnPosition);
+           telemetry.addData("table", turnTable.getCurrentPosition());
 
 
             /*******************************/
@@ -161,9 +168,9 @@ public class ManualDrive extends LinearOpMode {
             /*******************************/
 
             if (gamepad2.right_bumper) {
-                clampy.setPosition(0.52); // open
+                clampy.setPosition(0.39); // open
             } else if (gamepad2.left_bumper) {
-                clampy.setPosition(0.75); //close
+                clampy.setPosition(0.60); //close
             }
             telemetry.addData("clamp", clampy.getPosition());
 
@@ -261,8 +268,8 @@ public class ManualDrive extends LinearOpMode {
 
     final int STAFF_TURN_MIN = 150;
     final int TURN_POSITION_0 = 50;
-    final int TURN_POSITION_1 = -350;
-    final int TURN_POSITION_2 = -750;
+    final int TURN_POSITION_1 = -590;
+    final int TURN_POSITION_2 = -1800;
 
     public void turnTable(int position) {
         if (!(position == 0 || position == 1 || position == 2)) {
