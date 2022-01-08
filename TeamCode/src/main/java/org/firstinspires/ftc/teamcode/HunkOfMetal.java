@@ -257,6 +257,8 @@ public class HunkOfMetal {
     // variables declared, not the actual values bruh
     final int TOP_MIN = 864;
     final int TOP_MAX = 1000;
+    final int Cap_Max = 800;
+    final int Cap_Min = 700;
     final int MIDDLE_MIN = 575;
     final int MIDDLE_MAX = 625;
     final int BOTTOM_MIN = 216;
@@ -296,6 +298,9 @@ public class HunkOfMetal {
         } else if (level == 3) {
             min = TOP_MIN;
             max = TOP_MAX;
+        }else if (level==4){
+            min = Cap_Min;
+            max = Cap_Max;
         }
 
         while (where < min || where > max) {

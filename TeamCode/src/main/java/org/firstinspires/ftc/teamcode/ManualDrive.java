@@ -96,12 +96,12 @@ public class ManualDrive extends LinearOpMode {
 
             // Make sure arm is up X tics before turning
             if (gandalfStaff.getCurrentPosition() >= STAFF_TURN_MIN) {
-                if(gamepad1.dpad_right){
+                if(gamepad2.dpad_right){
                     if(ttableStart == 0) {
                         ttableStart = System.currentTimeMillis();
                     }
                     turnTable.setPower(ramp(-0.7, ttableStart));
-                }else if(gamepad1.dpad_left){
+                }else if(gamepad2.dpad_left){
                     if(ttableStart == 0) {
                         ttableStart = System.currentTimeMillis();
                     }
@@ -140,14 +140,16 @@ public class ManualDrive extends LinearOpMode {
             }
 
             // set arm to certain positions based on controls
-            if (gamepad1.y) {
+            if (gamepad2.y) {
                 level = 3;
-            } else if (gamepad1.b) {
+            } else if (gamepad2.b) {
                 level = 2;
-            } else if (gamepad1.a) {
+            } else if (gamepad2.a) {
                 level = 1;
-            } else if (gamepad1.x) {
+            } else if (gamepad2.x) {
                 level = 0;
+            }else if(gamepad1.a){
+                level = 4;
             }
 
             raiseArm(level);
@@ -158,9 +160,9 @@ public class ManualDrive extends LinearOpMode {
             /** Claw Control Section *******/
             /*******************************/
 
-            if (gamepad1.right_bumper) {
+            if (gamepad2.right_bumper) {
                 clampy.setPosition(0.52); // open
-            } else if (gamepad1.left_bumper) {
+            } else if (gamepad2.left_bumper) {
                 clampy.setPosition(0.75); //close
             }
             telemetry.addData("clamp", clampy.getPosition());
@@ -170,7 +172,7 @@ public class ManualDrive extends LinearOpMode {
             /** Duck Spinner Control Section **/
             /**********************************/
     if(gamepad1.right_trigger>0){
-        eyeball.setPower(gamepad1.right_trigger);
+        eyeball.setPower(gamepad1   .right_trigger);
     }else if(gamepad1.left_trigger>0){
         eyeball.setPower(-gamepad1.left_trigger);
     }else{
@@ -193,6 +195,8 @@ public class ManualDrive extends LinearOpMode {
     // variables declared, not the actual values bruh
     final int TOP_MIN = 864;
     final int TOP_MAX = 1000;
+    final int Cap_Max = 900;
+    final int Cap_Min = 800;
     final int MIDDLE_MIN = 513;
     final int MIDDLE_MAX = 600;
     final int BOTTOM_MIN = 216;
@@ -232,6 +236,9 @@ public class ManualDrive extends LinearOpMode {
         } else if (level == 3) {
             min = TOP_MIN;
             max = TOP_MAX;
+        }else if (level==4) {
+            min = Cap_Min;
+            max = Cap_Max;
         }
 
         // if current position > top_max then set power to turn backwards

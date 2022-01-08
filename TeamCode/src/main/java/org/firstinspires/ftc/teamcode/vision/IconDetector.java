@@ -72,7 +72,7 @@ public class IconDetector extends LinearOpMode
             @Override
             public void onOpened()
             {
-                phoneCam.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_LEFT);
+                phoneCam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -89,11 +89,16 @@ public class IconDetector extends LinearOpMode
         while (opModeIsActive())
         {
             telemetry.addData("Analysis", pipeline.getAnalysis());
+            int[] avgs = pipeline.getAvgs();
+            telemetry.addData("AVgs", avgs[0] + ", " + avgs[1] + "," + avgs[2]);
             telemetry.update();
 
             // Don't burn CPU cycles busy-looping in this sample
             sleep(50);
         }
+
+        phoneCam.stopStreaming();
+        phoneCam.closeCameraDevice();
     }
 
     public static class SkystoneDeterminationPipeline extends OpenCvPipeline
@@ -139,30 +144,19 @@ public class IconDetector extends LinearOpMode
          *   |                  Point B (70,50) |
          *   ------------------------------------
          *
+         */
 
-        Point region1_pointA = new Point(
-                REGION1_TOPLEFT_ANCHOR_POINT.x,
-                REGION1_TOPLEFT_ANCHOR_POINT.y);
-        Point region1_pointB = new Point(
-                REGION1_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
-                REGION1_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
-        Point region2_pointA = new Point(
-                REGION2_TOPLEFT_ANCHOR_POINT.x,
-                REGION2_TOPLEFT_ANCHOR_POINT.y);
-        Point region2_pointB = new Point(
-                REGION2_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
-                REGION2_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
-        Point region3_pointA = new Point(
-                REGION3_TOPLEFT_ANCHOR_POINT.x,
-                REGION3_TOPLEFT_ANCHOR_POINT.y);
-        Point region3_pointB = new Point(
-                REGION3_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
-                REGION3_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
-*/
+        Point lu;
+        Point ll;
+        Point mu;
+        Point ml;
+        Point ru;
+        Point rl;
+
         /*
          * Working variables
          */
-        Mat region1_Cb, region2_Cb, region3_Cb;
+        Mat left, mid, right;
         Mat hsv = new Mat();
         Mat mask = new Mat();
         Mat mask3chan = new Mat();
@@ -206,6 +200,28 @@ public class IconDetector extends LinearOpMode
             region3_Cb = Cb.submat(new Rect(region3_pointA, region3_pointB));
             */
 
+            Imgproc.cvtColor(firstFrame, hsv, Imgproc.COLOR_RGB2HSV);
+            Scalar lower = new Scalar(8,161,90);
+            Scalar upper = new Scalar(28,255,255);
+            Core.inRange(hsv, lower, upper, mask);
+            Imgproc.cvtColor(mask, mask3chan, Imgproc.COLOR_GRAY2RGB);
+
+
+            int w = firstFrame.width();
+            int h = firstFrame.height();
+
+            lu = new Point(0,0);
+            ll = new Point(w/3,h);
+            mu = new Point(w/3,0);
+            ml = new Point(2 * w / 3, h);
+            ru = new Point(2 * w / 3, 0);
+            rl = new Point(w,h);
+
+
+            left = mask3chan.submat(new Rect(lu,ll));
+            mid = mask3chan.submat(new Rect(mu,ml));
+            right = mask3chan.submat(new Rect(ru,rl));
+
         }
 
         @Override
@@ -217,8 +233,34 @@ public class IconDetector extends LinearOpMode
             Scalar lower = new Scalar(8,161,90);
             Scalar upper = new Scalar(28,255,255);
             Core.inRange(hsv, lower, upper, mask);
-
             Imgproc.cvtColor(mask, mask3chan, Imgproc.COLOR_GRAY2RGB);
+
+            avg1 = (int) Core.mean(left).val[0];
+            avg2 = (int) Core.mean(mid).val[0];
+            avg3 = (int) Core.mean(right).val[0];
+
+            avgs[0] = avg1;
+            avgs[1] = avg2;
+            avgs[2] = avg3;
+
+
+            if(avg1 > avg2 && avg1 > avg3)
+            {
+                position = SkystonePosition.LEFT;
+            }
+            else if(avg2 > avg1 && avg2 > avg3)
+            {
+                position = SkystonePosition.CENTER;
+            }
+            else
+            {
+                position = SkystonePosition.RIGHT;
+            }
+
+
+
+
+
 
             return mask3chan;
 
@@ -378,6 +420,11 @@ public class IconDetector extends LinearOpMode
         public SkystonePosition getAnalysis()
         {
             return position;
+        }
+
+        int[] avgs = {0,0,0};
+        public int[] getAvgs() {
+            return avgs;
         }
     }
 }
