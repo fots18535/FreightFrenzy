@@ -46,9 +46,6 @@ public class ManualDrive extends LinearOpMode {
 
         touchyBack.setMode(DigitalChannel.Mode.INPUT);
         touchyFront.setMode(DigitalChannel.Mode.INPUT);
-        ColorTester black = new ColorTester(106.6f, 233.1f, 0.201f, 0.493f, 0.009f, 0.015f);
-        ColorTester red = new ColorTester(0, 1, 0, 1, 0, 1);
-        ColorTester blue = new ColorTester(0, 1, 0, 1, 0, 1);
 
         // Stops coasting
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -64,7 +61,7 @@ public class ManualDrive extends LinearOpMode {
         turnTable.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         waitForStart();
-        clampy.setPosition(0.39);
+        clampy.setPosition(0.34);
         boolean encoderReset = false;
         int level = 0;
         int turnPosition = 0;
@@ -98,7 +95,6 @@ public class ManualDrive extends LinearOpMode {
             /*******************************/
 
             // TODO: can we use color or touch sensor(s) to recalibrate encoder?
-            // NormalizedRGBA colors = sensorColor.getNormalizedColors();
 
             // Make sure arm is up X tics before turning
             if (gandalfStaff.getCurrentPosition() >= STAFF_TURN_MIN) {
@@ -118,13 +114,13 @@ public class ManualDrive extends LinearOpMode {
                     turnTable.setPower(0);
                 }*/
 
-                if (gamepad1.dpad_right) {
+                if (gamepad2.dpad_right) {
                     turnPosition = 2;
-                } else if (gamepad1.dpad_up) {
+                } else if (gamepad2.dpad_up) {
                     turnPosition = 1;
-                } else if (gamepad1.dpad_left) {
+                } else if (gamepad2.dpad_left) {
                     turnPosition = 0;
-                } else if (gamepad1.dpad_down) {
+                } else if (gamepad2.dpad_down) {
                     turnPosition = -1;
                 }
 
@@ -168,9 +164,9 @@ public class ManualDrive extends LinearOpMode {
             /*******************************/
 
             if (gamepad2.right_bumper) {
-                clampy.setPosition(0.39); // open
+                clampy.setPosition(0.34); // open
             } else if (gamepad2.left_bumper) {
-                clampy.setPosition(0.60); //close
+                clampy.setPosition(0.52); //close
             }
             telemetry.addData("clamp", clampy.getPosition());
 
@@ -178,14 +174,13 @@ public class ManualDrive extends LinearOpMode {
             /**********************************/
             /** Duck Spinner Control Section **/
             /**********************************/
-    if(gamepad1.right_trigger>0){
-        eyeball.setPower(gamepad1   .right_trigger);
-    }else if(gamepad1.left_trigger>0){
-        eyeball.setPower(-gamepad1.left_trigger);
-    }else{
-        eyeball.setPower(0);
-    }
-
+            if(gamepad1.right_trigger>0){
+                eyeball.setPower(gamepad1   .right_trigger);
+            }else if(gamepad1.left_trigger>0){
+                eyeball.setPower(-gamepad1.left_trigger);
+            }else{
+                eyeball.setPower(0);
+            }
 
             telemetry.update();
         }

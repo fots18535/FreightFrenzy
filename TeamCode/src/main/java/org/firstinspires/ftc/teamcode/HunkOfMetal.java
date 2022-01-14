@@ -326,11 +326,11 @@ public class HunkOfMetal {
     }
 
     public void openClampy() {
-        clampy.setPosition(0.52); // open
+        clampy.setPosition(0.30); // open
     }
 
     public void closeClampy() {
-        clampy.setPosition(0.75); //close
+        clampy.setPosition(0.50); //close
     }
     // TODO: open and close claw
 

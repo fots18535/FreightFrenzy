@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.vision.Detector;
+import org.firstinspires.ftc.teamcode.vision.IconPosition;
+
 @Autonomous
 public class RedNoDuck extends LinearOpMode {
     @Override
@@ -10,12 +13,24 @@ public class RedNoDuck extends LinearOpMode {
         HunkOfMetal hunk = new HunkOfMetal(this);
         hunk.initialize();
 
-        waitForStart();
+        Detector d = new Detector(this);
+        d.start();
+        IconPosition position;
 
+        waitForStart();
+        position = d.getPosition();
         hunk.closeClampy();
         hunk.chaChaRealSmooth(-1.0,26);
         sleep(1000);
-        hunk.raiseArm(2);
+        if (position == IconPosition.LEFT) {
+            hunk.raiseArm(1);
+        } else if (position == IconPosition.CENTER) {
+            hunk.raiseArm(2);
+        } else if (position == IconPosition.RIGHT) {
+            hunk.raiseArm(3);
+        } else {
+            //defult behavior (dance around?)
+        }
         hunk.forward(1.0, 19);
         hunk.openClampy();
         sleep(2000);
