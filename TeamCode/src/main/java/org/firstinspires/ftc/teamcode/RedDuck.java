@@ -33,7 +33,7 @@ public class RedDuck extends LinearOpMode {
         } else if (position == IconPosition.RIGHT) {
             hunk.raiseArm(3);
         } else {
-            //defult behavior (dance around?)
+            hunk.raiseArm(3);
         }
         hunk.forward(1,17);
         hunk.openClampy();

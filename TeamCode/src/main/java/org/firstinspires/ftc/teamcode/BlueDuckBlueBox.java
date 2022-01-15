@@ -19,7 +19,9 @@ public class BlueDuckBlueBox extends LinearOpMode {
         waitForStart();
         position = d.getPosition();
         hunk.closeClampy();
-        hunk.forward(1,40);
+        hunk.forward(1,15);
+        hunk.chaChaRealSmooth(-1,24);
+        hunk.forward(1,25);
         if (position == IconPosition.LEFT) {
             hunk.raiseArm(1);
         } else if (position == IconPosition.CENTER) {
@@ -27,13 +29,13 @@ public class BlueDuckBlueBox extends LinearOpMode {
         } else if (position == IconPosition.RIGHT) {
             hunk.raiseArm(3);
         } else {
-            //defult behavior (dance around?)
+            hunk.raiseArm(3);
         }
-        hunk.turnLeft(90, 0.5);
-        hunk.forward(1, 6);
+        hunk.turnLeft(85, 0.5);
+        hunk.forward(1, 30);
         hunk.openClampy();
         hunk.forwardNoGyro(-1,40);
-        hunk.chaChaRealSmooth(1, 40);
+        hunk.chaChaRealSmooth(.5, 40);
         hunk.spinEyeballCW();
         hunk.chaChaRealSmooth(-1,10);
         hunk.forwardNoGyro(-1,10);

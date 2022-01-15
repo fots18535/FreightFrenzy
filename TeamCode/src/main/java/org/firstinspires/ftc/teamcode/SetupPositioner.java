@@ -7,7 +7,8 @@ import org.firstinspires.ftc.teamcode.vision.Detector;
 import org.firstinspires.ftc.teamcode.vision.IconPosition;
 
 @Autonomous
-public class RedNoDuck extends LinearOpMode {
+public class SetupPositioner extends LinearOpMode {
+
     @Override
     public void runOpMode() throws InterruptedException {
         HunkOfMetal hunk = new HunkOfMetal(this);
@@ -16,14 +17,11 @@ public class RedNoDuck extends LinearOpMode {
         Detector d = new Detector(this);
         d.start();
         IconPosition position;
-
-        waitForStart();
-        position = d.getPosition();
-        hunk.closeClampy();
-        hunk.chaChaRealSmooth(1.0,26);
-        sleep(1000);
+/*
         if (position == IconPosition.LEFT) {
-            hunk.raiseArm(1);
+            while (position == IconPosition.LEFT) {
+            }
+            hunk.chaChaRealSmooth(1, 1);
         } else if (position == IconPosition.CENTER) {
             hunk.raiseArm(2);
         } else if (position == IconPosition.RIGHT) {
@@ -31,13 +29,5 @@ public class RedNoDuck extends LinearOpMode {
         } else {
             hunk.raiseArm(3);
         }
-        hunk.forward(1.0, 22);
-        hunk.openClampy();
-        sleep(2000);
-        hunk.forward(-1, 20);
-        sleep(1000);
-        hunk.chaChaRealSmooth(-1,62);
-
-    }
-
-}
+  */
+}}

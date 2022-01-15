@@ -20,7 +20,7 @@ public class BlueNoDuck extends LinearOpMode {
         waitForStart();
         position = d.getPosition();
         hunk.closeClampy();
-        hunk.chaChaRealSmooth(-1.0,24);
+        hunk.chaChaRealSmooth(-1.0,22 );
         sleep(1000);
         if (position == IconPosition.LEFT) {
             hunk.raiseArm(1);
@@ -29,14 +29,18 @@ public class BlueNoDuck extends LinearOpMode {
         } else if (position == IconPosition.RIGHT) {
             hunk.raiseArm(3);
         } else {
-            //defult behavior (dance around?)
+            hunk.raiseArm(3);
         }
+        if (position == IconPosition.RIGHT){
+            hunk.forward(1,2);
+        }
+
         hunk.forward(1.0, 21);
         hunk.openClampy();
         sleep(2000);
-        hunk.forward(-1, 23);
+        hunk.forward(-1, 25);
         sleep(1000);
-        hunk.chaChaRealSmooth(1,65);
+        hunk.chaChaRealSmooth(1,55);
 
     }
 

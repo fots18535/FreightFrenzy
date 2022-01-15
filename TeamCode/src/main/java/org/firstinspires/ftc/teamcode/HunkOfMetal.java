@@ -261,8 +261,8 @@ public class HunkOfMetal {
     final int Cap_Min = 700;
     final int MIDDLE_MIN = 575;
     final int MIDDLE_MAX = 625;
-    final int BOTTOM_MIN = 216;
-    final int BOTTOM_MAX = 300;
+    final int BOTTOM_MIN = 246;
+    final int BOTTOM_MAX = 320;
     final int GROUND_MIN = -100;
     final int GROUND_MAX = 100;
 
@@ -326,18 +326,18 @@ public class HunkOfMetal {
     }
 
     public void openClampy() {
-        clampy.setPosition(0.30); // open
+        clampy.setPosition(0.40); // open
     }
 
     public void closeClampy() {
-        clampy.setPosition(0.50); //close
+        clampy.setPosition(0.57); //close
     }
     // TODO: open and close claw
 
     public void spinEyeballCW() {
         eyeball.setPower(1);
         long start = System.currentTimeMillis();
-        while(System.currentTimeMillis() - start < 2000 && mode.opModeIsActive()) {
+        while(System.currentTimeMillis() - start < 2500 && mode.opModeIsActive()) {
             mode.idle();
         }
         eyeball.setPower(0);
@@ -346,7 +346,7 @@ public class HunkOfMetal {
     public void spinEyeballCCW() {
         eyeball.setPower(-1);
         long start = System.currentTimeMillis();
-        while(System.currentTimeMillis() - start < 2000 && mode.opModeIsActive()) {
+        while(System.currentTimeMillis() - start < 2500 && mode.opModeIsActive()) {
             mode.idle();
         }
         eyeball.setPower(0);

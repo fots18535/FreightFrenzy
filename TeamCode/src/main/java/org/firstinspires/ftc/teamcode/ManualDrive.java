@@ -164,9 +164,9 @@ public class ManualDrive extends LinearOpMode {
             /*******************************/
 
             if (gamepad2.right_bumper) {
-                clampy.setPosition(0.34); // open
+                clampy.setPosition(0.40); // open
             } else if (gamepad2.left_bumper) {
-                clampy.setPosition(0.52); //close
+                clampy.setPosition(0.57); //close
             }
             telemetry.addData("clamp", clampy.getPosition());
 
@@ -195,8 +195,8 @@ public class ManualDrive extends LinearOpMode {
 
     // Raise arm to 3 different positions
     // variables declared, not the actual values bruh
-    final int TOP_MIN = 864;
-    final int TOP_MAX = 1000;
+    final int TOP_MIN = 900;
+    final int TOP_MAX = 1100;
     final int Cap_Max = 900;
     final int Cap_Min = 800;
     final int MIDDLE_MIN = 513;
@@ -217,7 +217,7 @@ public class ManualDrive extends LinearOpMode {
 
         // ground level stuff
         if (level == 0) {
-            if (where > 100) {
+            if (where > 100 || !maggot.isPressed()) {
                 gandalfStaff.setPower(0.1);
             } else {
                 gandalfStaff.setPower(0);
