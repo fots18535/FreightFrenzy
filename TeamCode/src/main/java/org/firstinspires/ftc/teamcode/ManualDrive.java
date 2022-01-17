@@ -152,7 +152,8 @@ public class ManualDrive extends LinearOpMode {
             } else if (gamepad2.x) {
                 level = 0;
             }else if(gamepad1.a){
-                level = 4;
+                level =
+                        4;
             }
 
             raiseArm(level);
@@ -164,9 +165,9 @@ public class ManualDrive extends LinearOpMode {
             /*******************************/
 
             if (gamepad2.right_bumper) {
-                clampy.setPosition(0.40); // open
+                clampy.setPosition(0.52); // open
             } else if (gamepad2.left_bumper) {
-                clampy.setPosition(0.57); //close
+                clampy.setPosition(0.96); //close
             }
             telemetry.addData("clamp", clampy.getPosition());
 
@@ -195,10 +196,10 @@ public class ManualDrive extends LinearOpMode {
 
     // Raise arm to 3 different positions
     // variables declared, not the actual values bruh
-    final int TOP_MIN = 900;
-    final int TOP_MAX = 1100;
-    final int Cap_Max = 900;
-    final int Cap_Min = 800;
+    final int Cap_Min = 900;
+    final int Cap_Max = 1100;
+    final int TOP_MAX = 880;
+    final int TOP_MIN = 770;
     final int MIDDLE_MIN = 513;
     final int MIDDLE_MAX = 600;
     final int BOTTOM_MIN = 216;

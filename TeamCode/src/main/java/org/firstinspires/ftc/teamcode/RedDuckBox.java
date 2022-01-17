@@ -27,8 +27,10 @@ public class RedDuckBox extends LinearOpMode {
        // hunk.forwardNoGyro(-0.5, 6);
         hunk.forward(1,12);
         hunk.chaChaRealSmooth(1,13);
+       //slide a bit away from the wall so we don't get caught
+        hunk.chaChaRealSmooth(-1,2);
         hunk.forward(1,29);
-        hunk.chaChaRealSmooth(-1,12);
+        hunk.chaChaRealSmooth(-1,10);
         hunk.turnRight(85,.5);
         if (position == IconPosition.LEFT) {
             hunk.raiseArm(1);
