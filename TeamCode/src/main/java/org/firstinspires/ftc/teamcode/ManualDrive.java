@@ -54,6 +54,7 @@ public class ManualDrive extends LinearOpMode {
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turnTable.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         gandalfStaff.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        eyeball.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         gandalfStaff.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         gandalfStaff.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -176,7 +177,7 @@ public class ManualDrive extends LinearOpMode {
             /** Duck Spinner Control Section **/
             /**********************************/
             if(gamepad1.right_trigger>0){
-                eyeball.setPower(gamepad1   .right_trigger);
+                eyeball.setPower(gamepad1.right_trigger);
             }else if(gamepad1.left_trigger>0){
                 eyeball.setPower(-gamepad1.left_trigger);
             }else{
