@@ -22,8 +22,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.ArrayList;
 
 public class Detector {
-    //OpenCvInternalCamera phoneCam;
-    OpenCvCamera phoneCam;
+    OpenCvInternalCamera phoneCam;
     IconDeterminationPipeline pipeline;
     LinearOpMode op;
 
@@ -32,12 +31,8 @@ public class Detector {
     }
 
     public void start() {
-        //int cameraMonitorViewId = op.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", op.hardwareMap.appContext.getPackageName());
-        //phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-
         int cameraMonitorViewId = op.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", op.hardwareMap.appContext.getPackageName());
-        phoneCam = OpenCvCameraFactory.getInstance().createWebcam(op.hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-
+        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
 
         pipeline = new IconDeterminationPipeline();
         phoneCam.setPipeline(pipeline);
@@ -70,12 +65,6 @@ public class Detector {
         phoneCam.closeCameraDevice();
     }
 
-    // TODO: add method to set the upper and lower threshold values
-
-    // TODO: add method return if the claw contains a block
-
-    // TODO: add method to change mode from icon detector to block detector
-
     public IconPosition getPosition() {
         return pipeline.getAnalysis();
     }
@@ -105,12 +94,6 @@ public class Detector {
         Point ml;
         Point ru;
         Point rl;
-
-        static final Scalar TEAL = new Scalar(3, 148, 252);
-        static final Scalar PURPLE = new Scalar(158, 52, 235);
-        static final Scalar RED = new Scalar(255, 0, 0);
-        static final Scalar GREEN = new Scalar(0, 255, 0);
-        static final Scalar BLUE = new Scalar(0, 0, 255);
 
         // HSV threshold values
         Scalar lower = new Scalar(78,78,37);
@@ -166,19 +149,8 @@ public class Detector {
 
         @Override
         public Mat processFrame(Mat input) {
-
-            // TODO: need different modes - one for icon position, one for detecting blocks
-
             Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);
 
-            // findIcon(hsv)
-            // blockInClaw(hsv)
-            // findNearestBlock(hsv)
-
-            return findNearestBlock(hsv);
-        }
-
-        public Mat findIcon(Mat hsv) {
             Core.inRange(hsv, lower, upper, mask);
             Imgproc.cvtColor(mask, mask3chan, Imgproc.COLOR_GRAY2RGB);
 
@@ -204,49 +176,6 @@ public class Detector {
             }
 
             return mask3chan;
-        }
-
-        // set some value (true / false) if a block is in the claw area
-        public void blockInClaw(Mat input) {
-            // threshold
-
-            // is there a white blob in the claw rectangle?
-
-
-        }
-
-        // find best point where the closest blocks are - closest or straightest?
-        public Mat findNearestBlock(Mat input) {
-            Imgproc.erode(input, output, erodeElement);
-            Imgproc.dilate(output, output, dilateElement);
-
-            // A list we'll be using to store the contours we find
-            ArrayList<MatOfPoint> contoursList = new ArrayList<>();
-
-            Core.inRange(output, new Scalar(18,75,122), new Scalar(27,255,255), mask);
-
-            // Ok, now actually look for the contours! We only look for external contours.
-            Imgproc.findContours(mask, contoursList, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
-
-            // We do draw the contours we find, but not to the main input buffer.
-            input.copyTo(contoursOnPlainImageMat);
-            Imgproc.drawContours(contoursOnPlainImageMat, contoursList, -1, RED, 3, 8);
-
-            // loop over contours, filter by area, find closest
-            for(MatOfPoint matty: contoursList)
-            {
-                double area = Imgproc.contourArea(matty);
-                if(area > 200)
-                {
-                    MatOfPoint2f  matty2f = new MatOfPoint2f( matty.toArray() );
-                    //RotatedRect potatorect = Imgproc.minAreaRect(matty2f);
-
-                    double dist = Imgproc.pointPolygonTest(matty2f, new Point(1,1), true);
-
-                }
-            }
-
-            return contoursOnPlainImageMat;
         }
 
         /*
