@@ -6,20 +6,17 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
+import org.opencv.core.Rect2d;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 class BlockPipeline extends OpenCvPipeline {
-
-    public enum Mode {
-        NOTHING, NEAREST, CLAW
-    }
-
-    Mode mode;
 
     Point lu;
     Point ll;
@@ -65,32 +62,15 @@ class BlockPipeline extends OpenCvPipeline {
         inclaw = mask.submat(new Rect(lu, ll));
     }
 
-    public void setMode(Mode mode) {
-        this.mode = mode;
-    }
-
     @Override
     public Mat processFrame(Mat input) {
 
-        Mat output = input;
-        switch (mode) {
-            case NEAREST:
-                output = findNearestBlock(input);
-                break;
-            case CLAW:
-                output = blockInClaw(input);
-                break;
-        }
-
+        Mat output = findNearestBlock(input);
         return output;
     }
 
     // set some value (true / false) if a block is in the claw area
     public Mat blockInClaw(Mat input) {
-        // threshold
-
-        // is there a white blob in the claw rectangle?
-
         return input;
     }
 
@@ -109,21 +89,35 @@ class BlockPipeline extends OpenCvPipeline {
         // Ok, now actually look for the contours! We only look for external contours.
         Imgproc.findContours(mask, contoursList, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
 
-        // We do draw the contours we find, but not to the main input buffer.
-        input.copyTo(contoursOnPlainImageMat);
-        Imgproc.drawContours(contoursOnPlainImageMat, contoursList, -1, RED, 3, 8);
+        int w = input.width();
+        int h = input.height();
 
         // loop over contours, filter by area, find closest
+        double bestDist = Double.MAX_VALUE;
+        MatOfPoint bestCont = null;
         for (MatOfPoint matty : contoursList) {
             double area = Imgproc.contourArea(matty);
             if (area > 200) {
                 MatOfPoint2f matty2f = new MatOfPoint2f(matty.toArray());
                 //RotatedRect potatorect = Imgproc.minAreaRect(matty2f);
 
-                double dist = Imgproc.pointPolygonTest(matty2f, new Point(1, 1), true);
-
+                double dist = Imgproc.pointPolygonTest(matty2f, new Point(w/2, h/2), true);
+                dist = Math.abs(dist);
+                if(dist < bestDist) {
+                    bestDist = dist;
+                    bestCont = matty;
+                }
             }
         }
+
+        // We do draw the contours we find, but not to the main input buffer.
+        input.copyTo(contoursOnPlainImageMat);
+        if(bestCont != null) {
+            List<MatOfPoint> bc = new LinkedList<>();
+            bc.add(bestCont);
+           Imgproc.drawContours(contoursOnPlainImageMat, bc, -1, RED, 3, 8);
+        }
+        Imgproc.rectangle(contoursOnPlainImageMat, new Rect(new Point(w/2, h/2), new Point(w/2-5, h/2-5)) ,BLUE, 4);
 
         return contoursOnPlainImageMat;
     }

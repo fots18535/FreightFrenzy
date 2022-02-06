@@ -83,17 +83,17 @@ public class MultiCamera {
     }
 
     public void iconMode() {
-        blockPipeline.setMode(BlockPipeline.Mode.NOTHING);
+        //blockPipeline.setMode(BlockPipeline.Mode.NOTHING);
         iconPipeline.setMode(IconPipeline.Mode.ICON);
     }
 
     public void nearestBlockMode() {
-        blockPipeline.setMode(BlockPipeline.Mode.NEAREST);
+        //blockPipeline.setMode(BlockPipeline.Mode.NEAREST);
         iconPipeline.setMode(IconPipeline.Mode.NOTHING);
     }
 
     public void blockInClawMode() {
-        blockPipeline.setMode(BlockPipeline.Mode.CLAW);
+        //blockPipeline.setMode(BlockPipeline.Mode.CLAW);
         iconPipeline.setMode(IconPipeline.Mode.NOTHING);
     }
 }
