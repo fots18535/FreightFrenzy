@@ -166,7 +166,7 @@ public class ManualDrive extends LinearOpMode {
             /*******************************/
 
             if (gamepad2.right_bumper) {
-                clampy.setPosition(0.52); // open
+                clampy.setPosition(0.54); // open
             } else if (gamepad2.left_bumper) {
                 clampy.setPosition(0.96); //close
             }
